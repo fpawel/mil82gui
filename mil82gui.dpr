@@ -2,8 +2,6 @@ program mil82gui;
 
 uses
   Vcl.Forms,
-  UnitMainFormMil82 in 'UnitMainFormMil82.pas' {MainFormMil82},
-  UnitFormLastParty in 'UnitFormLastParty.pas' {FormLastParty},
   superdate in 'utils\superobject\superdate.pas',
   superobject in 'utils\superobject\superobject.pas',
   supertimezone in 'utils\superobject\supertimezone.pas',
@@ -36,11 +34,14 @@ uses
   server_data_types in 'api\server_data_types.pas',
   services in 'api\services.pas',
   stringutils in 'utils\stringutils.pas',
-  vclutils in 'utils\vclutils.pas',
   stringgridutils in 'utils\stringgridutils.pas',
   ComponentBaloonHintU in 'utils\ComponentBaloonHintU.pas',
   ujsonrpc in 'utils\jsonrpc\ujsonrpc.pas',
-  info in 'info.pas';
+  app in 'app.pas',
+  UnitFormLastParty in 'UnitFormLastParty.pas' {FormLastParty},
+  UnitMainFormMil82 in 'UnitMainFormMil82.pas' {MainFormMil82},
+  UnitFormChartSeries in 'UnitFormChartSeries.pas' {FormChartSeries},
+  vclutils in 'utils\vclutils.pas';
 
 {$R *.res}
 
@@ -49,5 +50,6 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TMainFormMil82, MainFormMil82);
   Application.CreateForm(TFormLastParty, FormLastParty);
+  Application.CreateForm(TFormChartSeries, FormChartSeries);
   Application.Run;
 end.

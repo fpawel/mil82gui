@@ -16,7 +16,6 @@ type
         Addr : Integer;
         Place : Integer;
         Checked : Boolean;
-        Error : string;
         
     end;
  
@@ -29,6 +28,13 @@ type
         C2 : Single;
         C3 : Single;
         C4 : Single;
+        
+    end;
+ 
+    TVar = record
+    public 
+        Code : Integer;
+        Name : string;
         
     end;
 

@@ -11,7 +11,9 @@ object MainFormMil82: TMainFormMil82
   Font.Name = 'Segoe UI'
   Font.Style = []
   OldCreateOrder = False
+  OnClose = FormClose
   OnCreate = FormCreate
+  OnMouseWheel = FormMouseWheel
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 21
@@ -30,10 +32,15 @@ object MainFormMil82: TMainFormMil82
     TabWidth = 40
     OnChange = PageControlMainChange
     OnDrawTab = PageControlMainDrawTab
-    ExplicitTop = 29
     object TabSheetParty: TTabSheet
       Caption = #1055#1072#1088#1090#1080#1103
       ImageIndex = 4
+      ExplicitLeft = 105
+      ExplicitTop = 3
+    end
+    object TabSheetChart: TTabSheet
+      Caption = #1043#1088#1072#1092#1080#1082
+      ImageIndex = 3
     end
     object TabSheetJournal: TTabSheet
       Caption = #1046#1091#1088#1085#1072#1083

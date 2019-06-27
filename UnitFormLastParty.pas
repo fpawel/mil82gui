@@ -7,7 +7,8 @@ uses
     System.Classes, Vcl.Graphics,
     Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Grids, Vcl.StdCtrls,
     Vcl.Imaging.pngimage, Vcl.ExtCtrls, System.ImageList, Vcl.ImgList,
-    Vcl.Menus, Vcl.ComCtrls, Vcl.ToolWin, server_data_types;
+    Vcl.Menus, Vcl.ComCtrls, Vcl.ToolWin, server_data_types,
+    System.Generics.Collections;
 
 type
 
@@ -35,16 +36,20 @@ type
     private
         { Private declarations }
         Last_Edited_Col, Last_Edited_Row: Integer;
-
         FhWndTip: THandle;
-
         FInterrogatePlace: Integer;
+        FAddrError: TDictionary<byte, string>;
 
         procedure WMWindowPosChanged(var AMessage: TMessage);
           message WM_WINDOWPOSCHANGED;
         procedure WMEnterSizeMove(var Msg: TMessage); message WM_ENTERSIZEMOVE;
 
         procedure WMActivateApp(var AMessage: TMessage); message WM_ACTIVATEAPP;
+
+        procedure UpdateSerial(ACol, ARow: Integer; Value: string);
+        procedure UpdateAddr(ACol, ARow: Integer; Value: string);
+
+        function KeyPlaceNVar(place, nvar: Integer): string;
 
     public
         { Public declarations }
@@ -59,7 +64,8 @@ var
 implementation
 
 uses stringgridutils, stringutils, dateutils,
-    vclutils, ComponentBaloonHintU, services, info;
+    vclutils, ComponentBaloonHintU, services, HttpRpcClient, app,
+    UnitFormChartSeries;
 
 {$R *.dfm}
 
@@ -83,15 +89,35 @@ begin
 
 end;
 
+function KeyAddrVar(addr, nvar: Integer): string;
+begin
+    result := Format('%d-%d', [addr, nvar]);
+end;
+
+function TFormLastParty.KeyPlaceNVar(place, nvar: Integer): string;
+begin
+    result := KeyAddrVar(FProducts[place].addr, AppVars[nvar].Code);
+end;
+
 procedure TFormLastParty.FormCreate(Sender: TObject);
+
 begin
     FInterrogatePlace := -1;
-    reload_data;
+    FAddrError := TDictionary<byte, string>.create;
+
 end;
 
 procedure TFormLastParty.FormShow(Sender: TObject);
+//var
+//    place, n: Integer;
 begin
-    //
+    reload_data;
+
+//    for n := 0 to Length(AppVars) - 1 do
+//        for place := 0 to Length(FProducts) - 1 do
+//            FormChartSeries.SetAddrVarSeries(FProducts[place].addr,
+//              AppVars[n].Code, AppSets.ReadBool('series', KeyPlaceNVar(place,
+//              n), false));
 end;
 
 procedure TFormLastParty.WMEnterSizeMove(var Msg: TMessage);
@@ -141,6 +167,8 @@ end;
 
 procedure TFormLastParty.StringGrid1SetEditText(Sender: TObject;
   ACol, ARow: Integer; const Value: string);
+var
+    p: TLastPartyProduct;
 begin
     if ARow = 0 then
         exit;
@@ -153,20 +181,23 @@ begin
             Last_Edited_Row := -1; // Indicate no cell is edited
             // Do whatever wanted after user has finish editing a cell
             StringGrid1.OnSetEditText := nil;
+
             try
                 case ACol of
                     2:
-                        begin
-                            // UpdateSerial(ACol, ARow, Value);
-                        end;
+                        UpdateSerial(ACol, ARow, Value);
                     1:
-                        begin
-                            // UpdateAddr(ACol, ARow, Value);
-                        end;
+                        UpdateAddr(ACol, ARow, Value);
                 end;
-            finally
-                StringGrid1.OnSetEditText := StringGrid1SetEditText;
+            except
+                on E: Exception do
+                begin
+                    FhWndTip := StringGrid1.ShowBalloonTip(TIconKind.Error,
+                      'Ошибка', Format('место %d: "%s": %s',
+                      [ARow, Value, E.Message]));
+                end;
             end;
+            StringGrid1.OnSetEditText := StringGrid1SetEditText;
         end
         else
         begin // The cell is being editted
@@ -182,12 +213,12 @@ begin
     with StringGrid1 do
     begin
         if MessageBox(Handle,
-          PCHar(format
+          PCHar(Format
           ('Подтвердите необходимость удаления данных БО %s, место %d, адрес %s',
           [Cells[2, Row], Row, Cells[1, Row]])), 'Запрос подтверждения',
           mb_IconQuestion or mb_YesNo) <> mrYes then
             exit;
-        FProducts := TLastPartySvc.DeleteProduct(FProducts[Row-1].ProductID);
+        FProducts := TLastPartySvc.DeleteProduct(FProducts[Row - 1].ProductID);
         setup_products;
     end;
 
@@ -226,8 +257,8 @@ begin
     if (ACol > 0) or (ARow = 0) then
         exit;
 
+    TConfigSvc.SetPlaceChecked(ARow - 1, not FProducts[ARow - 1].Checked);
     FProducts[ARow - 1].Checked := not FProducts[ARow - 1].Checked;
-
     StringGrid_RedrawRow(StringGrid1, ARow);
 
 end;
@@ -258,7 +289,7 @@ begin
 
     p := FProducts[ARow - 1];
 
-    if (ACol > 0) and (p.Error <> '') then
+    if (ACol > 0) and FAddrError.ContainsKey(p.addr) then
     begin
         cnv.Font.Color := clRed;
         cnv.Brush.Color := $F6F7F7;
@@ -287,15 +318,16 @@ end;
 
 procedure TFormLastParty.setup_products;
 var
-    ARow,ACol: Integer;
-begin
+    place, n, ARow, ACol: Integer;
 
+begin
+    Height := StringGrid1.DefaultRowHeight * (Length(FProducts) + 1) + 50;
     StringGrid_Clear(StringGrid1);
     with StringGrid1 do
     begin
         self.Height := DefaultRowHeight * (Length(FProducts) + 1) + 50;
 
-        ColCount := 3 + Length(Vars);
+        ColCount := 3 + Length(AppVars);
         RowCount := Length(FProducts) + 1;
         if Length(FProducts) = 0 then
             exit;
@@ -309,12 +341,12 @@ begin
         Cells[2, 0] := '№';
 
         for ACol := 3 to ColCount - 1 do
-            Cells[ACol, 0] := Vars[ACol-3];
+            Cells[ACol, 0] := AppVars[ACol - 3].Name;
 
         for ARow := 1 to RowCount - 1 do
         begin
             Cells[0, ARow] := IntToStr(ARow);
-            Cells[1, ARow] := IntToStr(FProducts[ARow - 1].Addr);
+            Cells[1, ARow] := IntToStr(FProducts[ARow - 1].addr);
             Cells[2, ARow] := IntToStr(FProducts[ARow - 1].Serial);
         end;
 
@@ -325,13 +357,51 @@ end;
 procedure TFormLastParty.reload_data;
 begin
     with Application.MainForm do
-        with TLastPartySvc.Party do
-            Caption := format('Партия БО КГСДУМ № %d, создана %s',
+        with TLastPartySvc.Settings do
+            Caption := Format('Партия БО КГСДУМ № %d, создана %s',
               [PartyID, FormatDateTime('dd MMMM yyyy hh:nn',
               IncHour(CreatedAt, 3))]);
-    FProducts := TLastPartySvc.products;
+    FProducts := TLastPartySvc.Products;
     setup_products;
 
+end;
+
+procedure TFormLastParty.UpdateAddr(ACol, ARow: Integer; Value: string);
+var
+    p: TLastPartyProduct;
+begin
+    CloseWindow(FhWndTip);
+    p := FProducts[ARow - 1];
+    try
+        TLastPartySvc.SetProductAddr(p.ProductID, Value);
+        FProducts[ARow - 1].addr := StrToInt(Value);
+    except
+        on E: Exception do
+        begin
+            StringGrid1.Cells[ACol, ARow] := IntToStr(p.addr);
+            E.Message := 'адрес: ' + E.Message;
+            raise;
+        end;
+    end;
+end;
+
+procedure TFormLastParty.UpdateSerial(ACol, ARow: Integer; Value: string);
+var
+    p: TLastPartyProduct;
+begin
+    CloseWindow(FhWndTip);
+    p := FProducts[ARow - 1];
+    try
+        TLastPartySvc.SetProductSerial(p.ProductID, Value);
+        FProducts[ARow - 1].Serial := StrToInt(Value);
+    except
+        on E: Exception do
+        begin
+            StringGrid1.Cells[ACol, ARow] := IntToStr(p.Serial);
+            E.Message := 'серийный номер: ' + E.Message;
+            raise;
+        end;
+    end;
 end;
 
 end.

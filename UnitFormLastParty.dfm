@@ -36,6 +36,8 @@ object FormLastParty: TFormLastParty
     OnMouseDown = StringGrid1MouseDown
     OnSelectCell = StringGrid1SelectCell
     OnSetEditText = StringGrid1SetEditText
+    ExplicitLeft = 39
+    ExplicitTop = -2
     ColWidths = (
       64
       64

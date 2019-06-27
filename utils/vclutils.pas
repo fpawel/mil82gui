@@ -16,9 +16,26 @@ procedure PageControl_DrawVerticalTab(Control: TCustomTabControl;
 
 procedure ConvertImagesToHighColor(ImageList: TImageList);
 
+function GetVCLControlAtPos(c: TWinControl; mousePos: TPoint): TWinControl;
+
 implementation
 
 uses Winapi.commctrl, Winapi.Windows;
+
+function GetVCLControlAtPos(c: TWinControl; mousePos: TPoint): TWinControl;
+var
+    p: TPoint;
+begin
+
+    p := c.ScreenToClient(mousePos);
+    c := TWinControl(c.ControlAtPos(p, false, true));
+    while Assigned(c) do
+    begin
+        Result := c;
+        p := c.ScreenToClient(mousePos);
+        c := TWinControl(c.ControlAtPos(p, false, true));
+    end;
+end;
 
 procedure ConvertImagesToHighColor(ImageList: TImageList);
 
