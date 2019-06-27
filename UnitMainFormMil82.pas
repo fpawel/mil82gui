@@ -55,6 +55,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure ToolButton4Click(Sender: TObject);
     private
         { Private declarations }
         procedure AppException(Sender: TObject; E: Exception);
@@ -71,7 +72,7 @@ implementation
 {$R *.dfm}
 
 uses UnitFormLastParty, vclutils, JclDebug, ioutils, UnitFormChartSeries, app,
-  services;
+  services, UnitFormAppConfig;
 
 
 
@@ -163,6 +164,20 @@ procedure TMainFormMil82.PageControlMainDrawTab(Control: TCustomTabControl;
   TabIndex: Integer; const Rect: TRect; Active: Boolean);
 begin
     PageControl_DrawVerticalTab(Control, TabIndex, Rect, Active);
+end;
+
+procedure TMainFormMil82.ToolButton4Click(Sender: TObject);
+begin
+    with ToolButton4 do
+        with ClientToScreen(Point(0, Height)) do
+        begin
+            with FormAppconfig do
+            begin
+                Left := X - 5 - Width;
+                Top := Y + 5;
+                Show;
+            end;
+        end;
 end;
 
 procedure TMainFormMil82.AppException(Sender: TObject; E: Exception);

@@ -35,8 +35,6 @@ object MainFormMil82: TMainFormMil82
     object TabSheetParty: TTabSheet
       Caption = #1055#1072#1088#1090#1080#1103
       ImageIndex = 4
-      ExplicitLeft = 105
-      ExplicitTop = 3
     end
     object TabSheetChart: TTabSheet
       Caption = #1043#1088#1072#1092#1080#1082
@@ -420,6 +418,7 @@ object MainFormMil82: TMainFormMil82
         Top = 0
         Caption = 'ToolButton4'
         ImageIndex = 3
+        OnClick = ToolButton4Click
       end
     end
     object PanelDelay: TPanel

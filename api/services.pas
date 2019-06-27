@@ -19,13 +19,15 @@ type
     end; TConfigSvc = class 
     public
         class procedure SetPlaceChecked( Place: Integer; Checked: Boolean) ;static;
+        class procedure SetUserAppSetts( A: TUserAppSettings) ;static;
+        class function UserAppSetts: TUserAppSettings;static;
         class function Vars: TArray<TVar>;static;
          
     end;
 
 implementation 
 
-uses HttpRpcClient, SuperObjectHelp;
+uses HttpRpcClient, SuperObjectHelp, Grijjy.Bson.Serialization;
 
   
 class function TLastPartySvc.AddNewProduct: TArray<TLastPartyProduct>;
@@ -109,6 +111,26 @@ begin
     SuperObject_SetField(req, 'Place', Place);
     SuperObject_SetField(req, 'Checked', Checked);
     ThttpRpcClient.GetResponse('ConfigSvc.SetPlaceChecked', req); 
+end;
+
+ 
+class procedure TConfigSvc.SetUserAppSetts( A: TUserAppSettings) ;
+var
+    req : ISuperobject;
+    s:string;
+begin
+    req := SO;
+    TgoBsonSerializer.serialize(A, s); req['A'] := SO(s);
+    ThttpRpcClient.GetResponse('ConfigSvc.SetUserAppSetts', req); 
+end;
+
+ 
+class function TConfigSvc.UserAppSetts: TUserAppSettings;
+var
+    req : ISuperobject;
+begin
+    req := SO;
+    ThttpRpcClient.Call('ConfigSvc.UserAppSetts', req, Result); 
 end;
 
  

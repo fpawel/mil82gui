@@ -31,6 +31,19 @@ type
         
     end;
  
+    TUserAppSettings = record
+    public 
+        ComportProducts : string;
+        ComportTemperature : string;
+        ComportGas : string;
+        TemperatureMinus : Double;
+        TemperaturePlus : Double;
+        BlowGasMinutes : Integer;
+        BlowAirMinutes : Integer;
+        HoldTemperatureMinutes : Integer;
+        
+    end;
+ 
     TVar = record
     public 
         Code : Integer;

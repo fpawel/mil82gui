@@ -41,7 +41,8 @@ uses
   UnitFormLastParty in 'UnitFormLastParty.pas' {FormLastParty},
   UnitMainFormMil82 in 'UnitMainFormMil82.pas' {MainFormMil82},
   UnitFormChartSeries in 'UnitFormChartSeries.pas' {FormChartSeries},
-  vclutils in 'utils\vclutils.pas';
+  vclutils in 'utils\vclutils.pas',
+  UnitFormAppConfig in 'UnitFormAppConfig.pas' {FormAppConfig};
 
 {$R *.res}
 
@@ -51,5 +52,6 @@ begin
   Application.CreateForm(TMainFormMil82, MainFormMil82);
   Application.CreateForm(TFormLastParty, FormLastParty);
   Application.CreateForm(TFormChartSeries, FormChartSeries);
+  Application.CreateForm(TFormAppConfig, FormAppConfig);
   Application.Run;
 end.
