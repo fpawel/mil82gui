@@ -357,7 +357,7 @@ end;
 procedure TFormLastParty.reload_data;
 begin
     with Application.MainForm do
-        with TLastPartySvc.Settings do
+        with TLastPartySvc.Party do
             Caption := Format('Партия БО КГСДУМ № %d, создана %s',
               [PartyID, FormatDateTime('dd MMMM yyyy hh:nn',
               IncHour(CreatedAt, 3))]);

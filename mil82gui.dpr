@@ -42,7 +42,9 @@ uses
   UnitMainFormMil82 in 'UnitMainFormMil82.pas' {MainFormMil82},
   UnitFormChartSeries in 'UnitFormChartSeries.pas' {FormChartSeries},
   vclutils in 'utils\vclutils.pas',
-  UnitFormAppConfig in 'UnitFormAppConfig.pas' {FormAppConfig};
+  UnitFormAppConfig in 'UnitFormAppConfig.pas' {FormAppConfig},
+  comport in 'utils\comport.pas',
+  hardware_errors in 'utils\hardware_errors.pas';
 
 {$R *.res}
 

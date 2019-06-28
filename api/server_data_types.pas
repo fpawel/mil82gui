@@ -21,13 +21,30 @@ type
  
     TParty = record
     public 
+        ProductType : string;
+        C1 : Double;
+        C2 : Double;
+        C3 : Double;
+        C4 : Double;
         PartyID : Int64;
         CreatedAt : TDateTime;
+        
+    end;
+ 
+    TPartySettings = record
+    public 
         ProductType : string;
-        C1 : Single;
-        C2 : Single;
-        C3 : Single;
-        C4 : Single;
+        C1 : Double;
+        C2 : Double;
+        C3 : Double;
+        C4 : Double;
+        
+    end;
+ 
+    TTempPlusMinus = record
+    public 
+        TempPlus : Double;
+        TempMinus : Double;
         
     end;
  
@@ -48,6 +65,14 @@ type
     public 
         Code : Integer;
         Name : string;
+        
+    end;
+ 
+    TAddrVarValue = record
+    public 
+        Addr : Byte;
+        Var : Word;
+        Value : Double;
         
     end;
 

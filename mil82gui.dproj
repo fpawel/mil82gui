@@ -155,6 +155,8 @@
             <Form>FormAppConfig</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="utils\comport.pas"/>
+        <DCCReference Include="utils\hardware_errors.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -188,7 +190,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="F:\GOPATH\src\github.com\fpawel\mil82\build\mil82gui.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="c:\GOPATH\src\github.com\fpawel\mil82\build\mil82gui.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>mil82gui.exe</RemoteName>
                         <Overwrite>true</Overwrite>

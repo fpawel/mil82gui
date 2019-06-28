@@ -10,14 +10,16 @@ type
     public
         class function AddNewProduct: TArray<TLastPartyProduct>;static;
         class function DeleteProduct( param1: Int64) : TArray<TLastPartyProduct>;static;
+        class function Party: TParty;static;
         class function Products: TArray<TLastPartyProduct>;static;
+        class procedure SetPartySettings( A: TPartySettings) ;static;
         class procedure SetProductAddr( ProductID: Int64; AddrStr: string) ;static;
         class procedure SetProductSerial( ProductID: Int64; SerialStr: string) ;static;
-        class procedure SetSettings( ProductType: string; C1: Single; C2: Single; C3: Single; C4: Single) ;static;
-        class function Settings: TParty;static;
          
     end; TConfigSvc = class 
     public
+        class function ProductTypeTemperatures( param1: string) : TTempPlusMinus;static;
+        class function ProductTypesNames: TArray<string>;static;
         class procedure SetPlaceChecked( Place: Integer; Checked: Boolean) ;static;
         class procedure SetUserAppSetts( A: TUserAppSettings) ;static;
         class function UserAppSetts: TUserAppSettings;static;
@@ -49,12 +51,32 @@ begin
 end;
 
  
+class function TLastPartySvc.Party: TParty;
+var
+    req : ISuperobject;
+begin
+    req := SO;
+    ThttpRpcClient.Call('LastPartySvc.Party', req, Result); 
+end;
+
+ 
 class function TLastPartySvc.Products: TArray<TLastPartyProduct>;
 var
     req : ISuperobject;
 begin
     req := SO;
     ThttpRpcClient.Call('LastPartySvc.Products', req, Result); 
+end;
+
+ 
+class procedure TLastPartySvc.SetPartySettings( A: TPartySettings) ;
+var
+    req : ISuperobject;
+    s:string;
+begin
+    req := SO;
+    TgoBsonSerializer.serialize(A, s); req['A'] := SO(s);
+    ThttpRpcClient.GetResponse('LastPartySvc.SetPartySettings', req); 
 end;
 
  
@@ -79,30 +101,26 @@ begin
     ThttpRpcClient.GetResponse('LastPartySvc.SetProductSerial', req); 
 end;
 
- 
-class procedure TLastPartySvc.SetSettings( ProductType: string; C1: Single; C2: Single; C3: Single; C4: Single) ;
-var
-    req : ISuperobject;
-begin
-    req := SO;
-    SuperObject_SetField(req, 'ProductType', ProductType);
-    SuperObject_SetField(req, 'C1', C1);
-    SuperObject_SetField(req, 'C2', C2);
-    SuperObject_SetField(req, 'C3', C3);
-    SuperObject_SetField(req, 'C4', C4);
-    ThttpRpcClient.GetResponse('LastPartySvc.SetSettings', req); 
-end;
-
- 
-class function TLastPartySvc.Settings: TParty;
-var
-    req : ISuperobject;
-begin
-    req := SO;
-    ThttpRpcClient.Call('LastPartySvc.Settings', req, Result); 
-end;
-
   
+class function TConfigSvc.ProductTypeTemperatures( param1: string) : TTempPlusMinus;
+var
+    req : ISuperobject;
+begin
+    req := SA([]);
+    req.AsArray.Add(param1) ;
+    ThttpRpcClient.Call('ConfigSvc.ProductTypeTemperatures', req, Result); 
+end;
+
+ 
+class function TConfigSvc.ProductTypesNames: TArray<string>;
+var
+    req : ISuperobject;
+begin
+    req := SO;
+    ThttpRpcClient.Call('ConfigSvc.ProductTypesNames', req, Result); 
+end;
+
+ 
 class procedure TConfigSvc.SetPlaceChecked( Place: Integer; Checked: Boolean) ;
 var
     req : ISuperobject;
