@@ -437,7 +437,6 @@ object FormAppConfig: TFormAppConfig
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = -2
     object GroupBox4: TGroupBox
       AlignWithMargins = True
       Left = 5

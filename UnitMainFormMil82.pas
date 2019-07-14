@@ -7,7 +7,7 @@ uses
     System.Classes, Vcl.Graphics,
     Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.Menus, Vcl.ComCtrls,
     Vcl.StdCtrls, Vcl.ToolWin, Vcl.Imaging.pngimage, System.ImageList,
-    Vcl.ImgList;
+    server_data_types, Vcl.ImgList;
 
 type
     EHostApplicationPanic = class(Exception);
@@ -46,19 +46,32 @@ type
         PopupMenu1: TPopupMenu;
         N1: TMenuItem;
         TimerDelay: TTimer;
-    TabSheetChart: TTabSheet;
+        TimerPerforming: TTimer;
+        LabelStatusBottom1: TLabel;
+    N821: TMenuItem;
         procedure FormShow(Sender: TObject);
         procedure FormCreate(Sender: TObject);
         procedure PageControlMainDrawTab(Control: TCustomTabControl;
           TabIndex: Integer; const Rect: TRect; Active: Boolean);
         procedure PageControlMainChange(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
-      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
-    procedure ToolButton4Click(Sender: TObject);
+        procedure FormClose(Sender: TObject; var Action: TCloseAction);
+        procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
+          WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+        procedure ToolButton4Click(Sender: TObject);
+        procedure N1Click(Sender: TObject);
+        procedure ToolButtonRunClick(Sender: TObject);
+        procedure TimerPerformingTimer(Sender: TObject);
+        procedure FormResize(Sender: TObject);
+        procedure ToolButton2Click(Sender: TObject);
+        procedure ToolButton3Click(Sender: TObject);
+    procedure N821Click(Sender: TObject);
+    procedure TimerDelayTimer(Sender: TObject);
+    procedure ToolButtonStopClick(Sender: TObject);
     private
         { Private declarations }
         procedure AppException(Sender: TObject; E: Exception);
+        procedure HandleCopydata(var Message: TMessage); message WM_COPYDATA;
+        procedure SetupDelay(i: TDelayInfo);
     public
         { Public declarations }
 
@@ -72,9 +85,18 @@ implementation
 {$R *.dfm}
 
 uses UnitFormLastParty, vclutils, JclDebug, ioutils, UnitFormChartSeries, app,
-  services, UnitFormAppConfig;
+    services, UnitFormAppConfig, notify_services, HttpRpcClient, superobject,
+    UnitFormCharts, dateutils, math;
 
-
+function color_work_result(r: Integer): Tcolor;
+begin
+    if r = 0 then
+        exit(clNavy)
+    else if r = 1 then
+        exit(clMaroon)
+    else
+        exit(clRed);
+end;
 
 procedure TMainFormMil82.FormCreate(Sender: TObject);
 begin
@@ -83,15 +105,25 @@ begin
     LabelStatusTop.Caption := '';
     PanelMessageBox.Width := 700;
     PanelMessageBox.Height := 350;
+    LabelStatusBottom1.Caption := '';
 end;
 
-
-
 procedure TMainFormMil82.FormClose(Sender: TObject; var Action: TCloseAction);
-var wp: WINDOWPLACEMENT;
+var
+    wp: WINDOWPLACEMENT;
     fs: TFileStream;
 begin
-    fs := TFileStream.Create(ChangeFileExt(paramstr(0), '.position'), fmOpenWrite or fmCreate);
+    NotifyServices_SetEnabled(false);
+    HttpRpcClient.TIMEOUT_CONNECT := 10;
+    try
+        TPeerSvc.Close;
+    except
+        on ERpcNoResponseException do
+            exit;
+    end;
+
+    fs := TFileStream.Create(ChangeFileExt(paramstr(0), '.position'),
+      fmOpenWrite or fmCreate);
     if not GetWindowPlacement(Handle, wp) then
         raise Exception.Create('GetWindowPlacement: false');
     fs.Write(wp, SizeOf(wp));
@@ -117,17 +149,6 @@ begin
         SetWindowPlacement(Handle, wp);
     end;
 
-
-
-    with FormChartSeries do
-    begin
-        Font.Assign(self.Font);
-        Parent := TabSheetChart;
-        BorderStyle := bsNone;
-        Align := alClient;
-        Show;
-    end;
-
     with FormLastParty do
     begin
         Font.Assign(self.Font);
@@ -137,17 +158,116 @@ begin
         Show;
     end;
 
+    with FormChartSeries do
+        begin
+            Font.Assign(self.Font);
+            Parent := FormCharts;
+            BorderStyle := bsNone;
+            Align := alClient;
+            Show;
+        end;
+
+    with FormCharts do
+    begin
+        Font.Assign(self.Font);
+        Parent := TabSheetCharts;
+        BorderStyle := bsNone;
+        Align := alClient;
+        Show;
+        FetchYearsMonths;
+    end;
 
 
+
+    SetOnWorkStarted(
+        procedure(s: string)
+        begin
+            PanelMessageBox.Hide;
+            ToolBarStop.Show;
+            LabelStatusTop.Caption := TimeToStr(now) + ' ' + s;
+            TimerPerforming.Enabled := true;
+            LabelStatusBottom1.Caption := '';
+        end);
+
+    SetOnWorkComplete(
+        procedure(x: TWorkResultInfo)
+        begin
+
+            ImageInfo.Visible := x.Result <> 2;
+            ImageError.Visible := x.Result = 2;
+
+            if PanelMessageBox.Visible then
+                RichEditlMessageBoxText.Text := RichEditlMessageBoxText.Text +
+                  #10#13#10#13
+            else
+                RichEditlMessageBoxText.Text := '';
+
+            PanelMessageBoxTitle.Caption := x.Work;
+            RichEditlMessageBoxText.Text := RichEditlMessageBoxText.Text +
+              x.Message;
+            RichEditlMessageBoxText.Font.Color := color_work_result(x.Result);
+            LabelStatusTop.Font.Color := color_work_result(x.Result);
+
+            PanelMessageBox.Show;
+            PanelMessageBox.BringToFront;
+            FormResize(self);
+
+            ToolBarStop.Visible := false;
+            LabelStatusTop.Caption := TimeToStr(now) + ' ' + x.Work + ': ' +
+              x.Message;
+            TimerPerforming.Enabled := false;
+            LabelStatusBottom1.Caption := '';
+            FormLastParty.OnWorkComplete;
+        end);
+
+    SetOnAddrError(
+        procedure(x: TAddrError)
+        begin
+            FormLastParty.OnAddrError(x);
+            LabelStatusBottom1.Font.Color := clRed;
+            LabelStatusBottom1.Caption := Format('$%X: %s',
+              [x.Addr, x.Message]);
+        end);
+
+    SetOnReadVar(
+        procedure(x: TAddrVarValue)
+        begin
+            LabelStatusBottom1.Font.Color := clNavy;
+            LabelStatusBottom1.Caption := Format('$%X: %s[%d]=%s',
+              [x.Addr, AppVarName(x.VarCode), x.VarCode, floatToStr(x.Value)]);
+
+            FormLastParty.OnReadAddrVarValue(x);
+        end
+
+      );
+
+    SetOnDelay(
+        procedure(X: TDelayInfo)
+        begin
+            SetupDelay(X);
+        end);
+
+    NotifyServices_SetEnabled(true);
+    TPeerSvc.Init;
 end;
 
 procedure TMainFormMil82.FormMouseWheel(Sender: TObject; Shift: TShiftState;
-  WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 begin
     FormChartSeries.ChangeAxisOrder(GetVCLControlAtPos(self, MousePos),
       WheelDelta);
-//    FormCharts.FFormChartSeries.ChangeAxisOrder(GetVCLControlAtPos(self,
-//      MousePos), WheelDelta);
+    // FormCharts.FFormChartSeries.ChangeAxisOrder(GetVCLControlAtPos(self,
+    // MousePos), WheelDelta);
+end;
+
+procedure TMainFormMil82.FormResize(Sender: TObject);
+begin
+    if PanelMessageBox.Visible then
+    begin
+        PanelMessageBox.Left := ClientWidth div 2 - PanelMessageBox.Width div 2;
+        PanelMessageBox.Top := ClientHeight div 2 -
+          PanelMessageBox.Height div 2;
+    end;
 end;
 
 procedure TMainFormMil82.PageControlMainChange(Sender: TObject);
@@ -158,12 +278,53 @@ begin
     PageControl.Repaint;
     PanelMessageBox.Hide;
 
+    if PageControl.ActivePage = TabSheetCharts then
+        FormCharts.FetchYearsMonths;
+
 end;
 
 procedure TMainFormMil82.PageControlMainDrawTab(Control: TCustomTabControl;
-  TabIndex: Integer; const Rect: TRect; Active: Boolean);
+TabIndex: Integer; const Rect: TRect; Active: Boolean);
 begin
     PageControl_DrawVerticalTab(Control, TabIndex, Rect, Active);
+end;
+
+procedure TMainFormMil82.TimerDelayTimer(Sender: TObject);
+var
+    s: string;
+    v: TDateTime;
+begin
+    s := LabelDelayElepsedTime.Caption;
+    if TryStrToTime(s, v) then
+        LabelDelayElepsedTime.Caption := FormatDateTime('HH:mm:ss',
+          IncSecond(v));
+    ProgressBar1.Position := ProgressBar1.Position +
+      Integer(TimerDelay.Interval);
+
+    LabelProgress.Caption :=
+      inttostr(ceil(ProgressBar1.Position * 100 / ProgressBar1.Max)) + '%';
+
+end;
+
+procedure TMainFormMil82.TimerPerformingTimer(Sender: TObject);
+var
+    v: Integer;
+begin
+    with LabelStatusTop.Font do
+        if Color = clRed then
+            Color := clblue
+        else
+            Color := clRed;
+end;
+
+procedure TMainFormMil82.ToolButton2Click(Sender: TObject);
+begin
+    TRunnerSvc.Cancel;
+end;
+
+procedure TMainFormMil82.ToolButton3Click(Sender: TObject);
+begin
+    PanelMessageBox.Hide;
 end;
 
 procedure TMainFormMil82.ToolButton4Click(Sender: TObject);
@@ -173,11 +334,40 @@ begin
         begin
             with FormAppconfig do
             begin
-                Left := X - 5 - Width;
+                Left := x - 5 - Width;
                 Top := Y + 5;
                 Show;
             end;
         end;
+end;
+
+procedure TMainFormMil82.ToolButtonRunClick(Sender: TObject);
+begin
+    with ToolButtonRun do
+        with ClientToScreen(Point(0, Height)) do
+            PopupMenu1.Popup(x, Y);
+end;
+
+procedure TMainFormMil82.ToolButtonStopClick(Sender: TObject);
+begin
+    TRunnerSvc.SkipDelay;
+end;
+
+procedure TMainFormMil82.HandleCopydata(var Message: TMessage);
+begin
+    notify_services.HandleCopydata(Message);
+end;
+
+procedure TMainFormMil82.N1Click(Sender: TObject);
+begin
+    TRunnerSvc.RunReadVars;
+    FormCharts.FetchYearsMonths;
+end;
+
+procedure TMainFormMil82.N821Click(Sender: TObject);
+begin
+    TRunnerSvc.RunMainWork;
+    FormCharts.FetchYearsMonths;
 end;
 
 procedure TMainFormMil82.AppException(Sender: TObject; E: Exception);
@@ -227,10 +417,31 @@ begin
 
     if MessageDlg(E.Message, mtError, [mbAbort, mbIgnore], 0) = mrAbort then
     begin
+        NotifyServices_SetEnabled(false);
+        HttpRpcClient.TIMEOUT_CONNECT := 10;
+        try
+            TPeerSvc.Close;
+        except
+            on ERpcNoResponseException do
+                exit;
+        end;
+
         Application.OnException := nil;
         Application.Terminate;
         exit;
     end;
+end;
+
+procedure TMainFormMil82.SetupDelay(i: TDelayInfo);
+begin
+    LabelDelayElepsedTime.Caption := '00:00:00';
+    LabelDelayTotalTime.Caption := FormatDateTime('HH:mm:ss', IncSecond(i.Seconds));
+    LabelWhatDelay.Caption := i.What;
+    LabelProgress.Caption := '';
+    ProgressBar1.Position := 0;
+    ProgressBar1.Max := i.Seconds * 1000;
+    PanelDelay.Visible := i.Run;
+    TimerDelay.Enabled := i.Run;
 end;
 
 end.

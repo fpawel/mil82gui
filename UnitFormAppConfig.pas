@@ -158,6 +158,7 @@ var
 begin
     if not FEnableOnEdit then
         exit;
+    CloseWindow(FhWndTip);
     try
         v.ProductType := ComboBoxProductTypeName.Text;
         v.C1 := TryEditToFloat(EditC1);
@@ -176,6 +177,10 @@ begin
             FEnableOnEdit := true;
             ComboBoxComportProductsChange(EditTempMinus);
         end;
+
+        TLastPartySvc.SetPartySettings(v);
+
+        (Sender as TWinControl).SetFocus;
     except
         on EWrongInputExcpetion do
             exit;
@@ -189,6 +194,7 @@ var
 begin
     if not FEnableOnEdit then
         exit;
+    CloseWindow(FhWndTip);
 
     try
         v.ComportProducts := ComboBoxComportProducts.Text;
@@ -200,7 +206,8 @@ begin
         v.TemperatureMinus := TryEditToFloat(EditTempMinus);
         v.TemperaturePlus := TryEditToFloat(EditTempPlus);
         TConfigSvc.SetUserAppSetts(v);
-        CloseWindow(FhWndTip);
+
+        (Sender as TWinControl).SetFocus;
     except
         on EWrongInputExcpetion do
             exit;

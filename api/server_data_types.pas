@@ -7,13 +7,13 @@ uses Grijjy.Bson, Grijjy.Bson.Serialization;
 
 type
      
-    TLastPartyProduct = record
+    TProduct = record
     public 
         ProductID : Int64;
         PartyID : Int64;
         CreatedAt : TDateTime;
         Serial : Integer;
-        Addr : Integer;
+        Addr : Byte;
         Place : Integer;
         Checked : Boolean;
         
@@ -63,16 +63,57 @@ type
  
     TVar = record
     public 
-        Code : Integer;
+        Code : Word;
         Name : string;
+        
+    end;
+ 
+    TChartsBucket = record
+    public 
+        Day : Integer;
+        Hour : Integer;
+        Minute : Integer;
+        BucketID : Int64;
+        Name : string;
+        Last : Boolean;
+        
+    end;
+ 
+    TChartsYearMonth = record
+    public 
+        Year : Integer;
+        Month : Integer;
         
     end;
  
     TAddrVarValue = record
     public 
         Addr : Byte;
-        Var : Word;
+        VarCode : Word;
         Value : Double;
+        
+    end;
+ 
+    TAddrError = record
+    public 
+        Addr : Byte;
+        Message : string;
+        
+    end;
+ 
+    TWorkResultInfo = record
+    public 
+        Work : string;
+        Result : Integer;
+        Message : string;
+        
+    end;
+ 
+    TDelayInfo = record
+    public 
+        Run : Boolean;
+        Seconds : Integer;
+        What : string;
         
     end;
 

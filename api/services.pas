@@ -8,10 +8,10 @@ uses server_data_types, superobject;
 type 
      TLastPartySvc = class 
     public
-        class function AddNewProduct: TArray<TLastPartyProduct>;static;
-        class function DeleteProduct( param1: Int64) : TArray<TLastPartyProduct>;static;
+        class function AddNewProduct: TArray<TProduct>;static;
+        class function DeleteProduct( param1: Int64) : TArray<TProduct>;static;
         class function Party: TParty;static;
-        class function Products: TArray<TLastPartyProduct>;static;
+        class function Products: TArray<TProduct>;static;
         class procedure SetPartySettings( A: TPartySettings) ;static;
         class procedure SetProductAddr( ProductID: Int64; AddrStr: string) ;static;
         class procedure SetProductSerial( ProductID: Int64; SerialStr: string) ;static;
@@ -25,6 +25,23 @@ type
         class function UserAppSetts: TUserAppSettings;static;
         class function Vars: TArray<TVar>;static;
          
+    end; TRunnerSvc = class 
+    public
+        class procedure Cancel;static;
+        class procedure RunMainWork;static;
+        class procedure RunReadVars;static;
+        class procedure SkipDelay;static;
+         
+    end; TPeerSvc = class 
+    public
+        class procedure Close;static;
+        class procedure Init;static;
+         
+    end; TChartsSvc = class 
+    public
+        class function BucketsOfYearMonth( Year: Integer; Month: Integer) : TArray<TChartsBucket>;static;
+        class function YearsMonths: TArray<TChartsYearMonth>;static;
+         
     end;
 
 implementation 
@@ -32,7 +49,7 @@ implementation
 uses HttpRpcClient, SuperObjectHelp, Grijjy.Bson.Serialization;
 
   
-class function TLastPartySvc.AddNewProduct: TArray<TLastPartyProduct>;
+class function TLastPartySvc.AddNewProduct: TArray<TProduct>;
 var
     req : ISuperobject;
 begin
@@ -41,7 +58,7 @@ begin
 end;
 
  
-class function TLastPartySvc.DeleteProduct( param1: Int64) : TArray<TLastPartyProduct>;
+class function TLastPartySvc.DeleteProduct( param1: Int64) : TArray<TProduct>;
 var
     req : ISuperobject;
 begin
@@ -60,7 +77,7 @@ begin
 end;
 
  
-class function TLastPartySvc.Products: TArray<TLastPartyProduct>;
+class function TLastPartySvc.Products: TArray<TProduct>;
 var
     req : ISuperobject;
 begin
@@ -158,6 +175,80 @@ var
 begin
     req := SO;
     ThttpRpcClient.Call('ConfigSvc.Vars', req, Result); 
+end;
+
+  
+class procedure TRunnerSvc.Cancel;
+var
+    req : ISuperobject;
+begin
+    req := SO;
+    ThttpRpcClient.GetResponse('RunnerSvc.Cancel', req); 
+end;
+
+ 
+class procedure TRunnerSvc.RunMainWork;
+var
+    req : ISuperobject;
+begin
+    req := SO;
+    ThttpRpcClient.GetResponse('RunnerSvc.RunMainWork', req); 
+end;
+
+ 
+class procedure TRunnerSvc.RunReadVars;
+var
+    req : ISuperobject;
+begin
+    req := SO;
+    ThttpRpcClient.GetResponse('RunnerSvc.RunReadVars', req); 
+end;
+
+ 
+class procedure TRunnerSvc.SkipDelay;
+var
+    req : ISuperobject;
+begin
+    req := SO;
+    ThttpRpcClient.GetResponse('RunnerSvc.SkipDelay', req); 
+end;
+
+  
+class procedure TPeerSvc.Close;
+var
+    req : ISuperobject;
+begin
+    req := SO;
+    ThttpRpcClient.GetResponse('PeerSvc.Close', req); 
+end;
+
+ 
+class procedure TPeerSvc.Init;
+var
+    req : ISuperobject;
+begin
+    req := SO;
+    ThttpRpcClient.GetResponse('PeerSvc.Init', req); 
+end;
+
+  
+class function TChartsSvc.BucketsOfYearMonth( Year: Integer; Month: Integer) : TArray<TChartsBucket>;
+var
+    req : ISuperobject;
+begin
+    req := SO;
+    SuperObject_SetField(req, 'Year', Year);
+    SuperObject_SetField(req, 'Month', Month);
+    ThttpRpcClient.Call('ChartsSvc.BucketsOfYearMonth', req, Result); 
+end;
+
+ 
+class function TChartsSvc.YearsMonths: TArray<TChartsYearMonth>;
+var
+    req : ISuperobject;
+begin
+    req := SO;
+    ThttpRpcClient.Call('ChartsSvc.YearsMonths', req, Result); 
 end;
 
  

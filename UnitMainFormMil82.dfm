@@ -14,14 +14,24 @@ object MainFormMil82: TMainFormMil82
   OnClose = FormClose
   OnCreate = FormCreate
   OnMouseWheel = FormMouseWheel
+  OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 21
+  object LabelStatusBottom1: TLabel
+    Left = 0
+    Top = 532
+    Width = 993
+    Height = 21
+    Align = alBottom
+    Caption = 'LabelStatus'
+    ExplicitWidth = 79
+  end
   object PageControlMain: TPageControl
     Left = 0
     Top = 31
     Width = 993
-    Height = 522
+    Height = 501
     ActivePage = TabSheetParty
     Align = alClient
     MultiLine = True
@@ -35,10 +45,6 @@ object MainFormMil82: TMainFormMil82
     object TabSheetParty: TTabSheet
       Caption = #1055#1072#1088#1090#1080#1103
       ImageIndex = 4
-    end
-    object TabSheetChart: TTabSheet
-      Caption = #1043#1088#1072#1092#1080#1082
-      ImageIndex = 3
     end
     object TabSheetJournal: TTabSheet
       Caption = #1046#1091#1088#1085#1072#1083
@@ -314,6 +320,7 @@ object MainFormMil82: TMainFormMil82
           Top = 0
           Caption = 'ToolButtonConsoleHide'
           ImageIndex = 10
+          OnClick = ToolButton3Click
         end
       end
     end
@@ -389,6 +396,7 @@ object MainFormMil82: TMainFormMil82
         ImageIndex = 7
         ParentShowHint = False
         ShowHint = True
+        OnClick = ToolButtonRunClick
       end
     end
     object ToolBar3: TToolBar
@@ -538,6 +546,7 @@ object MainFormMil82: TMainFormMil82
           ImageIndex = 4
           ParentShowHint = False
           ShowHint = True
+          OnClick = ToolButtonStopClick
         end
       end
       object Panel2: TPanel
@@ -592,6 +601,7 @@ object MainFormMil82: TMainFormMil82
         ImageIndex = 1
         ParentShowHint = False
         ShowHint = True
+        OnClick = ToolButton2Click
       end
     end
   end
@@ -1238,12 +1248,26 @@ object MainFormMil82: TMainFormMil82
     Left = 607
     Top = 104
     object N1: TMenuItem
-      Caption = #1050#1072#1090#1072#1083#1086#1075' '#1089' '#1076#1072#1085#1085#1099#1084#1080
+      Caption = #1054#1087#1088#1086#1089
+      OnClick = N1Click
+    end
+    object N821: TMenuItem
+      Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1072' '#1052#1048#1051'-82'
+      OnClick = N821Click
     end
   end
   object TimerDelay: TTimer
     Enabled = False
+    Interval = 200
+    OnTimer = TimerDelayTimer
     Left = 216
     Top = 56
+  end
+  object TimerPerforming: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = TimerPerformingTimer
+    Left = 256
+    Top = 208
   end
 end

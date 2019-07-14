@@ -44,7 +44,8 @@ uses
   vclutils in 'utils\vclutils.pas',
   UnitFormAppConfig in 'UnitFormAppConfig.pas' {FormAppConfig},
   comport in 'utils\comport.pas',
-  hardware_errors in 'utils\hardware_errors.pas';
+  hardware_errors in 'utils\hardware_errors.pas',
+  UnitFormCharts in 'UnitFormCharts.pas' {FormCharts};
 
 {$R *.res}
 
@@ -55,5 +56,6 @@ begin
   Application.CreateForm(TFormLastParty, FormLastParty);
   Application.CreateForm(TFormChartSeries, FormChartSeries);
   Application.CreateForm(TFormAppConfig, FormAppConfig);
+  Application.CreateForm(TFormCharts, FormCharts);
   Application.Run;
 end.
