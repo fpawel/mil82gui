@@ -28,6 +28,8 @@ type
         FBuckets: TArray<TChartsBucket>;
         FYearMonth: TArray<TChartsYearMonth>;
 
+        procedure OnResponse(AResponse: TBytes);
+
     public
         { Public declarations }
         procedure FetchYearsMonths;
@@ -43,90 +45,7 @@ implementation
 {$R *.dfm}
 
 uses Grijjy.Http, httprpcclient, dateutils, stringgridutils, services,
-    stringutils;
-
-type
-    TReqThread = class(TThread)
-    public
-        FBucketID: int64;
-        FResponse: TBytes;
-        procedure Execute; override;
-        procedure UpdateGUI;
-        destructor Destroy; override;
-    end;
-
-destructor TReqThread.Destroy;
-begin
-    FBucketID := 0;
-end;
-
-procedure TReqThread.UpdateGUI;
-var
-    stored_at: TDateTime;
-    address, month, day, hour, minute, second: byte;
-
-    variable, year, millisecond: word;
-    value: double;
-    ms: TMemoryStream;
-    BR: TBinaryReader;
-
-    I: Integer;
-    n: LongInt;
-begin
-    ms := TMemoryStream.Create;
-    BR := TBinaryReader.Create(ms);
-
-
-    FormChartSeries.NewChart;
-
-    ms.Write(FResponse, 0, length(FResponse));
-    ms.Seek(0, TSeekOrigin.soBeginning);
-    n := BR.ReadInt64;
-    for I := 0 to n - 1 do
-    begin
-        address := BR.ReadByte;
-        variable := BR.ReadWord;
-        year := BR.ReadWord;
-        month := BR.ReadByte;
-        day := BR.ReadByte;
-        hour := BR.ReadByte;
-        minute := BR.ReadByte;
-        second := BR.ReadByte;
-        millisecond := BR.ReadWord;
-
-        stored_at := EncodeDateTime(year, month, day, hour, minute, second,
-          millisecond);
-
-        value := BR.ReadDouble;
-
-        FormChartSeries.AddValue(address, variable, value, stored_at);
-
-    end;
-    FormChartSeries.show;
-
-    ms.Free;
-    BR.Free;
-
-
-end;
-
-procedure TReqThread.Execute;
-var
-    url: string;
-    Http: TgoHttpClient;
-begin
-
-    Http := TgoHttpClient.Create(false, True);
-    url := Format(Mil82HttpAddr + '/chart?bucket=%d', [FBucketID]);
-
-    try
-        if not Http.Get(url, FResponse, TIMEOUT_CONNECT, TIMEOUT_RECV) then
-            raise ERpcNoResponseException.Create('нет связи с хост процессом');
-        Synchronize(UpdateGUI);
-    finally
-        HttpClientManager.Release(Http);
-    end;
-end;
+    stringutils, app, HttpClient;
 
 procedure TFormCharts.FormCreate(Sender: TObject);
 begin
@@ -184,16 +103,12 @@ end;
 
 procedure TFormCharts.StringGrid1SelectCell(Sender: TObject;
   ACol, ARow: Integer; var CanSelect: Boolean);
-var
-    th:TReqThread;
 begin
     if ARow - 1 >= length(FBuckets) then
         exit;
     FormChartSeries.Hide;
-    th:=TReqThread.Create(true);
-    th.FreeOnTerminate := true;
-    th.FBucketID := FBuckets[ARow - 1].BucketID;
-    th.Start;
+    Mil82HttpGetResponseAsync(Format(Mil82HttpAddr + '/chart?bucket=%d',
+      [FBuckets[ARow - 1].BucketID]), OnResponse);
 end;
 
 procedure TFormCharts.ComboBox1Change(Sender: TObject);
@@ -209,6 +124,9 @@ begin
         with FYearMonth[ComboBox1.ItemIndex] do
             FBuckets := TChartsSvc.BucketsOfYearMonth(year, month);
         RowCount := length(FBuckets) + 1;
+        if RowCount = 1 then
+            exit;
+
         FixedRows := 1;
         Cells[0, 0] := 'День';
         Cells[1, 0] := 'Вермя';
@@ -262,6 +180,53 @@ begin
 
     ComboBox1.ItemIndex := 0;
     ComboBox1Change(nil);
+end;
+
+procedure TFormCharts.OnResponse(AResponse: TBytes);
+var
+    stored_at: TDateTime;
+    address, month, day, hour, minute, second: byte;
+
+    variable, year, millisecond: word;
+    value: double;
+    ms: TMemoryStream;
+    BR: TBinaryReader;
+
+    I: Integer;
+    n: LongInt;
+begin
+    ms := TMemoryStream.Create;
+    BR := TBinaryReader.Create(ms);
+
+    FormChartSeries.NewChart;
+
+    ms.Write(AResponse, 0, length(AResponse));
+    ms.Seek(0, TSeekOrigin.soBeginning);
+    n := BR.ReadInt64;
+    for I := 0 to n - 1 do
+    begin
+        address := BR.ReadByte;
+        variable := BR.ReadWord;
+        year := BR.ReadWord;
+        month := BR.ReadByte;
+        day := BR.ReadByte;
+        hour := BR.ReadByte;
+        minute := BR.ReadByte;
+        second := BR.ReadByte;
+        millisecond := BR.ReadWord;
+
+        stored_at := EncodeDateTime(year, month, day, hour, minute, second,
+          millisecond);
+
+        value := BR.ReadDouble;
+
+        FormChartSeries.AddValue(address, variable, value, stored_at);
+
+    end;
+    FormChartSeries.show;
+
+    ms.Free;
+    BR.Free;
 end;
 
 end.

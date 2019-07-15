@@ -86,7 +86,7 @@ implementation
 
 uses UnitFormLastParty, vclutils, JclDebug, ioutils, UnitFormChartSeries, app,
     services, UnitFormAppConfig, notify_services, HttpRpcClient, superobject,
-    UnitFormCharts, dateutils, math;
+    UnitFormCharts, dateutils, math, HttpExceptions;
 
 function color_work_result(r: Integer): Tcolor;
 begin
@@ -100,6 +100,8 @@ end;
 
 procedure TMainFormMil82.FormCreate(Sender: TObject);
 begin
+
+    HttpRpcClient.HttpHostAddr := app.Mil82HttpAddr;
 
     Application.OnException := AppException;
     LabelStatusTop.Caption := '';

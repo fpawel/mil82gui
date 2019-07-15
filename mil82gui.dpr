@@ -28,7 +28,6 @@ uses
   Grijjy.Winsock2 in '..\..\grijjy\GrijjyFoundation\Grijjy.Winsock2.pas',
   Grijjy.OpenSSL in '..\..\grijjy\GrijjyFoundation\Grijjy.OpenSSL.pas',
   Grijjy.OpenSSL.API in '..\..\grijjy\GrijjyFoundation\Grijjy.OpenSSL.API.pas',
-  HttpRpcClient in 'utils\HttpRpcClient.pas',
   SuperObjectHelp in 'utils\SuperObjectHelp.pas',
   notify_services in 'api\notify_services.pas',
   server_data_types in 'api\server_data_types.pas',
@@ -45,7 +44,10 @@ uses
   UnitFormAppConfig in 'UnitFormAppConfig.pas' {FormAppConfig},
   comport in 'utils\comport.pas',
   hardware_errors in 'utils\hardware_errors.pas',
-  UnitFormCharts in 'UnitFormCharts.pas' {FormCharts};
+  UnitFormCharts in 'UnitFormCharts.pas' {FormCharts},
+  HttpRpcClient in 'api\HttpRpcClient.pas',
+  HttpClient in 'api\HttpClient.pas',
+  HttpExceptions in 'api\HttpExceptions.pas';
 
 {$R *.res}
 

@@ -66,6 +66,10 @@ type
         Panel11: TPanel;
         Panel12: TPanel;
         EditTempPlus: TEdit;
+    GroupBox5: TGroupBox;
+    Panel7: TPanel;
+    Panel8: TPanel;
+    EditInterrogateInerval: TEdit;
         procedure FormCreate(Sender: TObject);
         procedure FormDeactivate(Sender: TObject);
         procedure FormShow(Sender: TObject);
@@ -136,6 +140,8 @@ begin
     EditTempMinus.Text := FloatToStr(v.TemperatureMinus);
     EditTempPlus.Text := FloatToStr(v.TemperaturePlus);
 
+    EditInterrogateInerval.Text := IntToStr(v.InterrogateProductVarIntervalMillis);
+
     p := TLastPartySvc.Party;
     setupCB(ComboBoxProductTypeName, p.ProductType);
     EditC1.Text := FloatToStr(p.C1);
@@ -205,6 +211,7 @@ begin
         v.HoldTemperatureMinutes := TryEditToInt(EditDurMinutesHoldT);
         v.TemperatureMinus := TryEditToFloat(EditTempMinus);
         v.TemperaturePlus := TryEditToFloat(EditTempPlus);
+        v.InterrogateProductVarIntervalMillis := TryEditToInt(EditInterrogateInerval);
         TConfigSvc.SetUserAppSetts(v);
 
         (Sender as TWinControl).SetFocus;

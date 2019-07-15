@@ -3,7 +3,7 @@ object FormAppConfig: TFormAppConfig
   Top = 0
   BorderStyle = bsToolWindow
   Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1080
-  ClientHeight = 387
+  ClientHeight = 462
   ClientWidth = 654
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -22,10 +22,11 @@ object FormAppConfig: TFormAppConfig
     Left = 3
     Top = 3
     Width = 310
-    Height = 381
+    Height = 456
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitHeight = 381
     object GroupBox2: TGroupBox
       AlignWithMargins = True
       Left = 5
@@ -433,10 +434,11 @@ object FormAppConfig: TFormAppConfig
     Left = 319
     Top = 3
     Width = 334
-    Height = 381
+    Height = 456
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitHeight = 381
     object GroupBox4: TGroupBox
       AlignWithMargins = True
       Left = 5
@@ -673,6 +675,57 @@ object FormAppConfig: TFormAppConfig
           ParentFont = False
           TabOrder = 1
           Text = 'Edit1'
+          OnChange = ComboBoxComportProductsChange
+        end
+      end
+    end
+    object GroupBox5: TGroupBox
+      AlignWithMargins = True
+      Left = 5
+      Top = 264
+      Width = 324
+      Height = 65
+      Margins.Left = 5
+      Margins.Top = 5
+      Margins.Right = 5
+      Margins.Bottom = 5
+      Align = alTop
+      Caption = #1054#1087#1088#1086#1089
+      TabOrder = 2
+      object Panel7: TPanel
+        Left = 2
+        Top = 23
+        Width = 320
+        Height = 38
+        Align = alTop
+        BevelOuter = bvNone
+        BorderWidth = 1
+        TabOrder = 0
+        object Panel8: TPanel
+          Left = 1
+          Top = 1
+          Width = 200
+          Height = 36
+          Align = alLeft
+          Alignment = taRightJustify
+          BevelOuter = bvNone
+          Caption = #1048#1085#1090#1077#1088#1074#1072#1083', '#1084#1089
+          TabOrder = 0
+          ExplicitHeight = 35
+        end
+        object EditInterrogateInerval: TEdit
+          Left = 210
+          Top = 5
+          Width = 98
+          Height = 26
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 1
+          Text = 'EditInterrogateInerval'
           OnChange = ComboBoxComportProductsChange
         end
       end

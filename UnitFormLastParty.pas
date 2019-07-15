@@ -76,28 +76,34 @@ implementation
 
 uses stringgridutils, stringutils, dateutils,
     vclutils, ComponentBaloonHintU, services, HttpRpcClient, app,
-  UnitFormCharts;
+    UnitFormCharts;
 
 {$R *.dfm}
 
-procedure StringGrid_SetupColumnWidth(grd: TStringGrid);
+procedure StringGrid_SetupColumnWidth(grd: TStringGrid; ACol: Integer);
 var
-    w, ARow, ACol: Integer;
+    w, ARow: Integer;
 begin
     with grd do
     begin
-        for ACol := 0 to ColCount - 1 do
+        ColWidths[ACol] := 30;
+        for ARow := 0 to RowCount - 1 do
         begin
-            ColWidths[ACol] := 30;
-            for ARow := 0 to RowCount - 1 do
-            begin
-                w := Canvas.TextWidth(Cells[ACol, ARow]);
-                if ColWidths[ACol] < w + 30 then
-                    ColWidths[ACol] := w + 30;
-            end;
+            w := Canvas.TextWidth(Cells[ACol, ARow]);
+            if ColWidths[ACol] < w + 30 then
+                ColWidths[ACol] := w + 30;
         end;
     end;
 
+end;
+
+procedure StringGrid_SetupColumnsWidth(grd: TStringGrid);
+var
+    ACol: Integer;
+begin
+    with grd do
+        for ACol := 0 to ColCount - 1 do
+            StringGrid_SetupColumnWidth(grd,ACol);
 end;
 
 function KeyAddrVar(addr, nvar: Integer): string;
@@ -281,7 +287,7 @@ var
     cnv: TCanvas;
     p: TProduct;
     connInfo: TConnectionInfo;
-    connBmpIndex1, connBmpIndex2:integer;
+    connBmpIndex1, connBmpIndex2: Integer;
 
     procedure DrawCellConnection;
     var
@@ -344,7 +350,7 @@ begin
     end
     else
         DrawCellText(StringGrid1, ACol, ARow, Rect, taLeftJustify,
-            StringGrid1.Cells[ACol, ARow]);
+          StringGrid1.Cells[ACol, ARow]);
 
     StringGrid_DrawCellBounds(cnv, ACol, ARow, Rect);
 end;
@@ -385,7 +391,7 @@ begin
         end;
 
     end;
-    StringGrid_SetupColumnWidth(StringGrid1);
+    StringGrid_SetupColumnsWidth(StringGrid1);
 end;
 
 procedure TFormLastParty.reload_data;
@@ -459,7 +465,8 @@ begin
                 if AppVars[j].Code = X.VarCode then
                 begin
                     StringGrid1.Cells[4 + j, i + 1] := floatToStr(X.Value);
-                    FormCharts.AddValue(x.Addr, x.VarCode, x.Value, now);
+                    FormCharts.AddValue(X.addr, X.VarCode, X.Value, now);
+                    StringGrid_SetupColumnWidth(StringGrid1, 4 + j);
                 end;
 
             if (prevPlaceInterrogate > -1) AND (prevPlaceInterrogate <> i) then

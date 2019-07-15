@@ -6,13 +6,14 @@ uses  inifiles, server_data_types;
 var
     AppSets :  TInifile;
     AppVars: TArray<TVar>;
+    Mil82HttpAddr: string;
 
 function AppVarName(code:integer):string;
 function AppVarCode(name:string):integer;
 
 implementation
 
-uses sysutils, stringutils;
+uses registry, winapi.windows, sysutils, stringutils;
 
 function AppVarName(code:integer):string;
 var
@@ -34,10 +35,27 @@ begin
     exit(-1);
 end;
 
+function GetMil82HttpAddr: string;
+var
+    key: TRegistry;
+begin
+    key := TRegistry.Create(KEY_READ);
+    try
+        if not key.OpenKey('mil82\http', False) then
+            raise Exception.Create('cant open mil82\http');
+        result := key.ReadString('addr');
+    finally
+        key.CloseKey;
+        key.Free;
+    end;
+end;
+
 
 initialization
 
 AppSets := TIniFile.Create(ChangeFileExt(paramstr(0), '.ini'));
+
+Mil82HttpAddr :=  GetMil82HttpAddr;
 
 end.
 

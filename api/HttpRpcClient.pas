@@ -5,13 +5,6 @@ interface
 uses superobject, System.sysutils;
 
 type
-    ERpcException = class(Exception);
-
-    ERpcNoResponseException = class(ERpcException);
-    ERpcWrongResponseException = class(ERpcException);
-
-    ERpcHTTPException = class(ERpcWrongResponseException);
-    ERpcRemoteErrorException = class(ERpcException);
 
     ThttpRpcClient = record
         class procedure Call<T>(method: string; params: ISuperobject;
@@ -20,16 +13,17 @@ type
           : ISuperobject; static;
     end;
 
-    function Mil82HttpAddr: string;
-
 var
+    { Адрес хоста }
+    HttpHostAddr : string;
+
     { Timeout for operations }
     TIMEOUT_CONNECT : integer = 500;
     TIMEOUT_RECV : integer = 10000;
 
 implementation
 
-uses registry, winapi.windows,
+uses HttpExceptions, registry, winapi.windows,
     ujsonrpc, classes, System.Net.URLClient, Grijjy.Http,
     Grijjy.Bson.Serialization;
 
@@ -61,21 +55,6 @@ begin
     end;
 end;
 
-function Mil82HttpAddr: string;
-var
-    key: TRegistry;
-begin
-    key := TRegistry.Create(KEY_READ);
-    try
-        if not key.OpenKey('mil82\http', False) then
-            raise Exception.Create('cant open mil82\http');
-        result := key.ReadString('addr');
-    finally
-        key.CloseKey;
-        key.Free;
-    end;
-end;
-
 class function ThttpRpcClient.GetResponse(method: string; params: ISuperobject)
   : ISuperobject;
 var
@@ -91,7 +70,7 @@ begin
         Http.RequestHeaders.AddOrSet('Accept', 'application/json');
         Http.RequestBody := TJsonRpcMessage.request(0, method, params).AsJSon;
 
-        if not Http.Post(Mil82HttpAddr + '/rpc', AResponse, TIMEOUT_CONNECT,
+        if not Http.Post(HttpHostAddr + '/rpc', AResponse, TIMEOUT_CONNECT,
           TIMEOUT_RECV) then
             raise ERpcNoResponseException.Create('нет связи с хост процессом');
 
@@ -121,7 +100,9 @@ begin
         end;
 
         if Assigned(rx['error.message']) then
-            raise ERpcRemoteErrorException.Create(rx['error'].S['message']);
+            raise ERpcRemoteErrorException.Create
+            (Format('%s%s: %s',
+              [method, params.AsString, rx['error'].S['message']]));
 
         raise ERpcWrongResponseException.Create
           (Format('%s%s'#13'%s'#13'message type: %s', [method, params.AsString,

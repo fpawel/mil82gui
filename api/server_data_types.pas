@@ -58,6 +58,7 @@ type
         BlowGasMinutes : Integer;
         BlowAirMinutes : Integer;
         HoldTemperatureMinutes : Integer;
+        InterrogateProductVarIntervalMillis : Integer;
         
     end;
  
