@@ -26,7 +26,7 @@ type
     private
         { Private declarations }
         FBuckets: TArray<TChartsBucket>;
-        FYearMonth: TArray<TChartsYearMonth>;
+        FYearMonth: TArray<TYearMonth>;
 
         procedure OnResponse(AResponse: TBytes);
 
@@ -161,7 +161,7 @@ end;
 procedure TFormCharts.FetchYearsMonths;
 var
     I: Integer;
-    ym: TChartsYearMonth;
+    ym: TYearMonth;
 begin
     ComboBox1.Clear;
     FYearMonth := TChartsSvc.YearsMonths;

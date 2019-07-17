@@ -11,7 +11,6 @@ type
     public 
         ProductID : Int64;
         PartyID : Int64;
-        CreatedAt : TDateTime;
         Serial : Integer;
         Addr : Byte;
         Place : Integer;
@@ -80,10 +79,21 @@ type
         
     end;
  
-    TChartsYearMonth = record
+    TYearMonth = record
     public 
         Year : Integer;
         Month : Integer;
+        
+    end;
+ 
+    TPartyCatalogue = record
+    public 
+        PartyID : Int64;
+        ProductType : string;
+        Last : Boolean;
+        Day : Integer;
+        Hour : Integer;
+        Minute : Integer;
         
     end;
  

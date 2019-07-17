@@ -47,7 +47,8 @@ uses
   UnitFormCharts in 'UnitFormCharts.pas' {FormCharts},
   HttpRpcClient in 'api\HttpRpcClient.pas',
   HttpClient in 'api\HttpClient.pas',
-  HttpExceptions in 'api\HttpExceptions.pas';
+  HttpExceptions in 'api\HttpExceptions.pas',
+  UnitFormData in 'UnitFormData.pas' {FormData};
 
 {$R *.res}
 
@@ -59,5 +60,6 @@ begin
   Application.CreateForm(TFormChartSeries, FormChartSeries);
   Application.CreateForm(TFormAppConfig, FormAppConfig);
   Application.CreateForm(TFormCharts, FormCharts);
+  Application.CreateForm(TFormData, FormData);
   Application.Run;
 end.

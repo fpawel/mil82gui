@@ -40,7 +40,12 @@ type
     end; TChartsSvc = class 
     public
         class function BucketsOfYearMonth( Year: Integer; Month: Integer) : TArray<TChartsBucket>;static;
-        class function YearsMonths: TArray<TChartsYearMonth>;static;
+        class function YearsMonths: TArray<TYearMonth>;static;
+         
+    end; TPartiesSvc = class 
+    public
+        class function PartiesOfYearMonth( Year: Integer; Month: Integer) : TArray<TPartyCatalogue>;static;
+        class function YearsMonths: TArray<TYearMonth>;static;
          
     end;
 
@@ -243,12 +248,32 @@ begin
 end;
 
  
-class function TChartsSvc.YearsMonths: TArray<TChartsYearMonth>;
+class function TChartsSvc.YearsMonths: TArray<TYearMonth>;
 var
     req : ISuperobject;
 begin
     req := SO;
     ThttpRpcClient.Call('ChartsSvc.YearsMonths', req, Result); 
+end;
+
+  
+class function TPartiesSvc.PartiesOfYearMonth( Year: Integer; Month: Integer) : TArray<TPartyCatalogue>;
+var
+    req : ISuperobject;
+begin
+    req := SO;
+    SuperObject_SetField(req, 'Year', Year);
+    SuperObject_SetField(req, 'Month', Month);
+    ThttpRpcClient.Call('PartiesSvc.PartiesOfYearMonth', req, Result); 
+end;
+
+ 
+class function TPartiesSvc.YearsMonths: TArray<TYearMonth>;
+var
+    req : ISuperobject;
+begin
+    req := SO;
+    ThttpRpcClient.Call('PartiesSvc.YearsMonths', req, Result); 
 end;
 
  

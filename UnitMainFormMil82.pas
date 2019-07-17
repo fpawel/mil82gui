@@ -49,6 +49,7 @@ type
         TimerPerforming: TTimer;
         LabelStatusBottom1: TLabel;
     N821: TMenuItem;
+    TabSheetData: TTabSheet;
         procedure FormShow(Sender: TObject);
         procedure FormCreate(Sender: TObject);
         procedure PageControlMainDrawTab(Control: TCustomTabControl;
@@ -86,7 +87,7 @@ implementation
 
 uses UnitFormLastParty, vclutils, JclDebug, ioutils, UnitFormChartSeries, app,
     services, UnitFormAppConfig, notify_services, HttpRpcClient, superobject,
-    UnitFormCharts, dateutils, math, HttpExceptions;
+    UnitFormCharts, dateutils, math, HttpExceptions, UnitFormData;
 
 function color_work_result(r: Integer): Tcolor;
 begin
@@ -179,6 +180,16 @@ begin
         FetchYearsMonths;
     end;
 
+    with FormData do
+    begin
+        Font.Assign(self.Font);
+        Parent := TabSheetData;
+        BorderStyle := bsNone;
+        Align := alClient;
+        Show;
+        FetchYearsMonths;
+    end;
+
 
 
     SetOnWorkStarted(
@@ -243,10 +254,18 @@ begin
 
       );
 
-    SetOnDelay(
-        procedure(X: TDelayInfo)
+    SetOnDelay(SetupDelay);
+
+    SetOnWarning(
+        procedure(content: string)
+        var
+            s: string;
         begin
-            SetupDelay(X);
+            s := content + #10#13#10#13;
+            s := s + 'Нажмите OK чтобы игнорировать ошибку и продолжить работу.'#10#13#10#13;
+            s := s + 'Нажмите ОТМЕНА чтобы прервать.';
+            if MessageDlg(s, mtWarning, mbOKCancel, 0) <> IDOK then
+                TRunnerSvc.Cancel;
         end);
 
     NotifyServices_SetEnabled(true);
@@ -281,7 +300,11 @@ begin
     PanelMessageBox.Hide;
 
     if PageControl.ActivePage = TabSheetCharts then
-        FormCharts.FetchYearsMonths;
+        FormCharts.FetchYearsMonths else
+    if PageControl.ActivePage = TabSheetData then
+        FormData.FetchYearsMonths else
+    if PageControl.ActivePage = TabSheetParty then
+        FormLastParty.setup_products;
 
 end;
 
