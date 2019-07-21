@@ -87,7 +87,8 @@ implementation
 
 uses UnitFormLastParty, vclutils, JclDebug, ioutils, UnitFormChartSeries, app,
     services, UnitFormAppConfig, notify_services, HttpRpcClient, superobject,
-    UnitFormCharts, dateutils, math, HttpExceptions, UnitFormData;
+    UnitFormCharts, dateutils, math, HttpExceptions, UnitFormData,
+  stringgridutils;
 
 function color_work_result(r: Integer): Tcolor;
 begin
@@ -189,6 +190,7 @@ begin
         Show;
         FetchYearsMonths;
     end;
+    PageControlMain.ActivePageIndex := 0;
 
 
 
@@ -270,6 +272,8 @@ begin
 
     NotifyServices_SetEnabled(true);
     TPeerSvc.Init;
+
+
 end;
 
 procedure TMainFormMil82.FormMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -304,7 +308,9 @@ begin
     if PageControl.ActivePage = TabSheetData then
         FormData.FetchYearsMonths else
     if PageControl.ActivePage = TabSheetParty then
+    begin
         FormLastParty.setup_products;
+    end;
 
 end;
 

@@ -8,10 +8,12 @@ uses server_data_types, superobject;
 type 
      TLastPartySvc = class 
     public
-        class function AddNewProduct: TArray<TProduct>;static;
-        class function DeleteProduct( param1: Int64) : TArray<TProduct>;static;
+        class function AddNewProduct: TArray<TLastPartyProduct>;static;
+        class function DeleteProduct( param1: Int64) : TArray<TLastPartyProduct>;static;
         class function Party: TParty;static;
-        class function Products: TArray<TProduct>;static;
+        class function Products: TArray<TLastPartyProduct>;static;
+        class function Products1: TArray<TProduct>;static;
+        class function ProductsValues( param1: Int64) : TTable;static;
         class procedure SetPartySettings( A: TPartySettings) ;static;
         class procedure SetProductAddr( ProductID: Int64; AddrStr: string) ;static;
         class procedure SetProductSerial( ProductID: Int64; SerialStr: string) ;static;
@@ -45,6 +47,8 @@ type
     end; TPartiesSvc = class 
     public
         class function PartiesOfYearMonth( Year: Integer; Month: Integer) : TArray<TPartyCatalogue>;static;
+        class function PartyProducts( param1: Int64) : TArray<TProduct>;static;
+        class function PartyProductsValues( param1: Int64; param2: Int64) : TTable;static;
         class function YearsMonths: TArray<TYearMonth>;static;
          
     end;
@@ -54,7 +58,7 @@ implementation
 uses HttpRpcClient, SuperObjectHelp, Grijjy.Bson.Serialization;
 
   
-class function TLastPartySvc.AddNewProduct: TArray<TProduct>;
+class function TLastPartySvc.AddNewProduct: TArray<TLastPartyProduct>;
 var
     req : ISuperobject;
 begin
@@ -63,7 +67,7 @@ begin
 end;
 
  
-class function TLastPartySvc.DeleteProduct( param1: Int64) : TArray<TProduct>;
+class function TLastPartySvc.DeleteProduct( param1: Int64) : TArray<TLastPartyProduct>;
 var
     req : ISuperobject;
 begin
@@ -82,12 +86,31 @@ begin
 end;
 
  
-class function TLastPartySvc.Products: TArray<TProduct>;
+class function TLastPartySvc.Products: TArray<TLastPartyProduct>;
 var
     req : ISuperobject;
 begin
     req := SO;
     ThttpRpcClient.Call('LastPartySvc.Products', req, Result); 
+end;
+
+ 
+class function TLastPartySvc.Products1: TArray<TProduct>;
+var
+    req : ISuperobject;
+begin
+    req := SO;
+    ThttpRpcClient.Call('LastPartySvc.Products1', req, Result); 
+end;
+
+ 
+class function TLastPartySvc.ProductsValues( param1: Int64) : TTable;
+var
+    req : ISuperobject;
+begin
+    req := SA([]);
+    req.AsArray.Add(param1) ;
+    ThttpRpcClient.Call('LastPartySvc.ProductsValues', req, Result); 
 end;
 
  
@@ -265,6 +288,27 @@ begin
     SuperObject_SetField(req, 'Year', Year);
     SuperObject_SetField(req, 'Month', Month);
     ThttpRpcClient.Call('PartiesSvc.PartiesOfYearMonth', req, Result); 
+end;
+
+ 
+class function TPartiesSvc.PartyProducts( param1: Int64) : TArray<TProduct>;
+var
+    req : ISuperobject;
+begin
+    req := SA([]);
+    req.AsArray.Add(param1) ;
+    ThttpRpcClient.Call('PartiesSvc.PartyProducts', req, Result); 
+end;
+
+ 
+class function TPartiesSvc.PartyProductsValues( param1: Int64; param2: Int64) : TTable;
+var
+    req : ISuperobject;
+begin
+    req := SA([]);
+    req.AsArray.Add(param1) ;
+    req.AsArray.Add(param2) ;
+    ThttpRpcClient.Call('PartiesSvc.PartyProductsValues', req, Result); 
 end;
 
  

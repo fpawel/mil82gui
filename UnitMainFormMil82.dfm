@@ -25,7 +25,7 @@ object MainFormMil82: TMainFormMil82
     Height = 21
     Align = alBottom
     Caption = 'LabelStatus'
-    ExplicitWidth = 80
+    ExplicitWidth = 79
   end
   object PageControlMain: TPageControl
     Left = 0
@@ -42,7 +42,6 @@ object MainFormMil82: TMainFormMil82
     TabWidth = 40
     OnChange = PageControlMainChange
     OnDrawTab = PageControlMainDrawTab
-    ExplicitTop = 34
     object TabSheetParty: TTabSheet
       Caption = #1055#1072#1088#1090#1080#1103
       ImageIndex = 4

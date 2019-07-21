@@ -24,12 +24,19 @@ procedure StringGrid_DrawCellBounds(cnv: TCanvas; acol, arow: integer;
 procedure StringGrid_DrawCellBmp(grd: TStringGrid; Rect: TRect;
   bmp: vcl.graphics.TBitmap);
 
-procedure StringGrid_RedrawCol(grd: TStringGrid; aCol: integer);
+procedure StringGrid_RedrawCol(grd: TStringGrid; acol: integer);
 
 procedure DrawCellText(StringGrid1: TStringGrid; acol, arow: integer;
   Rect: TRect; ta: TAlignment; text: string);
 
 procedure StringGrid_CopytoClipboard(StringGrid1: TStringGrid);
+
+procedure StringGrid_DrawMeregedCell(grd: TStringGrid; AText: string;
+  arow: integer; Rect: TRect);
+
+procedure StringGrid_SetupColumnWidth(grd: TStringGrid; acol: integer);
+procedure StringGrid_SetupColumnsWidth(grd: TStringGrid);
+procedure StringGrid_Unselect(grd: TStringGrid);
 
 implementation
 
@@ -38,7 +45,7 @@ uses Clipbrd, winapi.windows, system.math, winapi.uxtheme, stringutils;
 procedure StringGrid_CopytoClipboard(StringGrid1: TStringGrid);
 var
     c, r: integer;
-    s : string;
+    s: string;
 begin
     s := '';
     with StringGrid1 do
@@ -130,15 +137,15 @@ begin
                 Cells[I, arow] := Cells[I, arow];
 end;
 
-procedure StringGrid_RedrawCol(grd: TStringGrid; aCol: integer);
+procedure StringGrid_RedrawCol(grd: TStringGrid; acol: integer);
 var
     I: integer;
 begin
     with grd do
-        if (aCol >= 0) AND (aCol < rowcount) then
+        if (acol >= 0) AND (acol < rowcount) then
             for I := 0 to colcount - 1 do
 
-                Cells[aCol, 1] := Cells[aCol, i];
+                Cells[acol, 1] := Cells[acol, I];
 end;
 
 procedure StringGrid_Clear(grd: TStringGrid);
@@ -304,6 +311,73 @@ begin
     end;
     x := r.Right + 2;
     grd.Canvas.Draw(r.Left + 2, Rect.Top + 3, bmp);
+end;
+
+procedure StringGrid_DrawMeregedCell(grd: TStringGrid; AText: string;
+  arow: integer; Rect: TRect);
+var
+    ACOl1, ACOl2, TxtW, TxtH, txtX, txtY: integer;
+    txtRct: TRect;
+begin
+    ACOl1 := grd.LeftCol;
+    ACOl2 := grd.LeftCol + grd.VisibleColCount;
+
+    txtRct.Top := grd.CellRect(ACOl1, arow).Top;
+    txtRct.Left := grd.CellRect(ACOl1, arow).Left;
+    txtRct.Right := grd.CellRect(ACOl2, arow).Right;
+    txtRct.Bottom := grd.CellRect(ACOl2, arow).Bottom;
+
+    TxtW := grd.Canvas.TextWidth(AText);
+    TxtH := grd.Canvas.TextHeight(AText);
+    // txtX := txtRct.Left + round((txtRct.Right - txtRct.Left - TxtW) / 2);
+    txtX := txtRct.Left + 5;
+    txtY := txtRct.Top + round((txtRct.Bottom - txtRct.Top - TxtH) / 2);
+
+    // grd.Canvas.FillRect(RegionRect);
+    grd.Canvas.TextRect(txtRct, txtX, txtY, AText);
+    // grd.Canvas.TextOut(txtX, txtY, txt);
+
+    // обрамление
+    grd.Canvas.MoveTo(txtRct.Left, txtRct.Bottom);
+    grd.Canvas.LineTo(txtRct.Right, txtRct.Bottom);
+end;
+
+procedure StringGrid_SetupColumnWidth(grd: TStringGrid; acol: integer);
+var
+    w, arow: integer;
+begin
+    with grd do
+    begin
+        ColWidths[acol] := DefaultColWidth;
+        for arow := 0 to rowcount - 1 do
+        begin
+            w := Canvas.TextWidth(Cells[acol, arow]);
+            if ColWidths[acol] < w + 5 then
+                ColWidths[acol] := w + 5;
+        end;
+    end;
+
+end;
+
+procedure StringGrid_Unselect(grd: TStringGrid);
+var
+    gr: TGridRect;
+begin
+    gr.Left := -1;
+    gr.Right := -1;
+    gr.Top := -1;
+    gr.Bottom := -1;
+    grd.Selection := gr;
+
+end;
+
+procedure StringGrid_SetupColumnsWidth(grd: TStringGrid);
+var
+    acol: integer;
+begin
+    with grd do
+        for acol := 0 to colcount - 1 do
+            StringGrid_SetupColumnWidth(grd, acol);
 end;
 
 end.

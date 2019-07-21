@@ -60,7 +60,7 @@ type
 
     public
         { Public declarations }
-        FProducts: TArray<TProduct>;
+        FProducts: TArray<TLastPartyProduct>;
         procedure reload_data;
         procedure setup_products;
 
@@ -80,31 +80,9 @@ uses stringgridutils, stringutils, dateutils,
 
 {$R *.dfm}
 
-procedure StringGrid_SetupColumnWidth(grd: TStringGrid; ACol: Integer);
-var
-    w, ARow: Integer;
-begin
-    with grd do
-    begin
-        ColWidths[ACol] := 30;
-        for ARow := 0 to RowCount - 1 do
-        begin
-            w := Canvas.TextWidth(Cells[ACol, ARow]);
-            if ColWidths[ACol] < w + 30 then
-                ColWidths[ACol] := w + 30;
-        end;
-    end;
 
-end;
 
-procedure StringGrid_SetupColumnsWidth(grd: TStringGrid);
-var
-    ACol: Integer;
-begin
-    with grd do
-        for ACol := 0 to ColCount - 1 do
-            StringGrid_SetupColumnWidth(grd,ACol);
-end;
+
 
 function KeyAddrVar(addr, nvar: Integer): string;
 begin
@@ -285,7 +263,7 @@ procedure TFormLastParty.StringGrid1DrawCell(Sender: TObject;
 var
     grd: TStringGrid;
     cnv: TCanvas;
-    p: TProduct;
+    p: TLastPartyProduct;
     connInfo: TConnectionInfo;
     connBmpIndex1, connBmpIndex2: Integer;
 
@@ -408,7 +386,7 @@ end;
 
 procedure TFormLastParty.UpdateAddr(ACol, ARow: Integer; Value: string);
 var
-    p: TProduct;
+    p: TLastPartyProduct;
 begin
     CloseWindow(FhWndTip);
     p := FProducts[ARow - 1];
@@ -427,7 +405,7 @@ end;
 
 procedure TFormLastParty.UpdateSerial(ACol, ARow: Integer; Value: string);
 var
-    p: TProduct;
+    p: TLastPartyProduct;
 begin
     CloseWindow(FhWndTip);
     p := FProducts[ARow - 1];

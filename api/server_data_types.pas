@@ -7,10 +7,9 @@ uses Grijjy.Bson, Grijjy.Bson.Serialization;
 
 type
      
-    TProduct = record
+    TLastPartyProduct = record
     public 
         ProductID : Int64;
-        PartyID : Int64;
         Serial : Integer;
         Addr : Byte;
         Place : Integer;
@@ -27,6 +26,26 @@ type
         C4 : Double;
         PartyID : Int64;
         CreatedAt : TDateTime;
+        
+    end;
+ 
+    TProduct = record
+    public 
+        ProductID : Int64;
+        Serial : Integer;
+        Addr : Byte;
+        
+    end;
+ 
+    TRow = record
+    public 
+        Cells : TArray<string>;
+        
+    end;
+ 
+    TTable = record
+    public 
+        Rows : TArray<TRow>;
         
     end;
  
