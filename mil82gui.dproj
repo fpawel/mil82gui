@@ -1,7 +1,7 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjectGuid>{606DEAFC-7FEA-4B11-8654-0AEE33FBD56C}</ProjectGuid>
-        <ProjectVersion>18.6</ProjectVersion>
+        <ProjectVersion>18.7</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <MainSource>mil82gui.dpr</MainSource>
         <Base>True</Base>
@@ -109,27 +109,26 @@
         <DCCReference Include="utils\superobject\supertimezone.pas"/>
         <DCCReference Include="utils\superobject\supertypes.pas"/>
         <DCCReference Include="utils\superobject\superxmlparser.pas"/>
-        <DCCReference Include="..\..\grijjy\GrijjyFoundation\Grijjy.BinaryCoding.pas"/>
-        <DCCReference Include="..\..\grijjy\GrijjyFoundation\Grijjy.Bson.IO.pas"/>
-        <DCCReference Include="..\..\grijjy\GrijjyFoundation\Grijjy.Bson.pas"/>
-        <DCCReference Include="..\..\grijjy\GrijjyFoundation\Grijjy.Bson.Path.pas"/>
-        <DCCReference Include="..\..\grijjy\GrijjyFoundation\Grijjy.Bson.Serialization.pas"/>
-        <DCCReference Include="..\..\grijjy\GrijjyFoundation\Grijjy.Collections.pas"/>
-        <DCCReference Include="..\..\grijjy\GrijjyFoundation\Grijjy.Console.pas"/>
-        <DCCReference Include="..\..\grijjy\GrijjyFoundation\Grijjy.DateUtils.pas"/>
-        <DCCReference Include="..\..\grijjy\GrijjyFoundation\Grijjy.Hash.pas"/>
-        <DCCReference Include="..\..\grijjy\GrijjyFoundation\Grijjy.Hooking.pas"/>
-        <DCCReference Include="..\..\grijjy\GrijjyFoundation\Grijjy.Http.pas"/>
-        <DCCReference Include="..\..\grijjy\GrijjyFoundation\Grijjy.JWT.pas"/>
-        <DCCReference Include="..\..\grijjy\GrijjyFoundation\Grijjy.MemoryPool.pas"/>
-        <DCCReference Include="..\..\grijjy\GrijjyFoundation\Grijjy.PropertyBag.pas"/>
-        <DCCReference Include="..\..\grijjy\GrijjyFoundation\Grijjy.SocketPool.Win.pas"/>
-        <DCCReference Include="..\..\grijjy\GrijjyFoundation\Grijjy.System.pas"/>
-        <DCCReference Include="..\..\grijjy\GrijjyFoundation\Grijjy.SysUtils.pas"/>
-        <DCCReference Include="..\..\grijjy\GrijjyFoundation\Grijjy.Uri.pas"/>
-        <DCCReference Include="..\..\grijjy\GrijjyFoundation\Grijjy.Winsock2.pas"/>
-        <DCCReference Include="..\..\grijjy\GrijjyFoundation\Grijjy.OpenSSL.pas"/>
-        <DCCReference Include="..\..\grijjy\GrijjyFoundation\Grijjy.OpenSSL.API.pas"/>
+        <DCCReference Include="grijjy\Grijjy.BinaryCoding.pas"/>
+        <DCCReference Include="grijjy\Grijjy.Bson.pas"/>
+        <DCCReference Include="grijjy\Grijjy.Bson.Serialization.pas"/>
+        <DCCReference Include="grijjy\Grijjy.Console.pas"/>
+        <DCCReference Include="grijjy\Grijjy.DateUtils.pas"/>
+        <DCCReference Include="grijjy\Grijjy.Hash.pas"/>
+        <DCCReference Include="grijjy\Grijjy.Hooking.pas"/>
+        <DCCReference Include="grijjy\Grijjy.Http.pas"/>
+        <DCCReference Include="grijjy\Grijjy.JWT.pas"/>
+        <DCCReference Include="grijjy\Grijjy.MemoryPool.pas"/>
+        <DCCReference Include="grijjy\Grijjy.PropertyBag.pas"/>
+        <DCCReference Include="grijjy\Grijjy.SocketPool.Win.pas"/>
+        <DCCReference Include="grijjy\Grijjy.System.pas"/>
+        <DCCReference Include="grijjy\Grijjy.SysUtils.pas"/>
+        <DCCReference Include="grijjy\Grijjy.Uri.pas"/>
+        <DCCReference Include="grijjy\Grijjy.Winsock2.pas"/>
+        <DCCReference Include="grijjy\Grijjy.OpenSSL.API.pas"/>
+        <DCCReference Include="grijjy\Grijjy.Bson.IO.pas"/>
+        <DCCReference Include="grijjy\Grijjy.Collections.pas"/>
+        <DCCReference Include="grijjy\Grijjy.OpenSSL.pas"/>
         <DCCReference Include="utils\SuperObjectHelp.pas"/>
         <DCCReference Include="api\notify_services.pas"/>
         <DCCReference Include="api\server_data_types.pas"/>
@@ -147,24 +146,24 @@
         </DCCReference>
         <DCCReference Include="UnitFormChartSeries.pas">
             <Form>FormChartSeries</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="utils\vclutils.pas"/>
         <DCCReference Include="UnitFormAppConfig.pas">
             <Form>FormAppConfig</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="utils\comport.pas"/>
         <DCCReference Include="utils\hardware_errors.pas"/>
         <DCCReference Include="UnitFormCharts.pas">
             <Form>FormCharts</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="api\HttpRpcClient.pas"/>
         <DCCReference Include="api\HttpClient.pas"/>
         <DCCReference Include="api\HttpExceptions.pas"/>
         <DCCReference Include="UnitFormData.pas">
             <Form>FormData</Form>
+        </DCCReference>
+        <DCCReference Include="UnitFormModalMessage.pas">
+            <Form>FormModalMessage</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Release">
@@ -272,6 +271,12 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
+                <DeployClass Name="Android_Colors">
+                    <Platform Name="Android">
+                        <RemoteDir>res\values</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
                 <DeployClass Name="Android_DefaultAppIcon">
                     <Platform Name="Android">
                         <RemoteDir>res\drawable</RemoteDir>
@@ -308,6 +313,36 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
+                <DeployClass Name="Android_NotificationIcon24">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-mdpi</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_NotificationIcon36">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-hdpi</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_NotificationIcon48">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-xhdpi</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_NotificationIcon72">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-xxhdpi</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_NotificationIcon96">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-xxxhdpi</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
                 <DeployClass Name="Android_SplashImage426">
                     <Platform Name="Android">
                         <RemoteDir>res\drawable-small</RemoteDir>
@@ -329,6 +364,12 @@
                 <DeployClass Name="Android_SplashImage960">
                     <Platform Name="Android">
                         <RemoteDir>res\drawable-xlarge</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_Strings">
+                    <Platform Name="Android">
+                        <RemoteDir>res\values</RemoteDir>
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
@@ -451,7 +492,51 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
+                <DeployClass Name="iPad_Launch1024x768">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
                 <DeployClass Name="iPad_Launch1536">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPad_Launch1536x2048">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPad_Launch1668">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPad_Launch1668x2388">
                     <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
                     </Platform>
@@ -473,7 +558,172 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
+                <DeployClass Name="iPad_Launch2048x1536">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPad_Launch2048x2732">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPad_Launch2224">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPad_Launch2388x1668">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPad_Launch2732x2048">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
                 <DeployClass Name="iPad_Launch768">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPad_Launch768x1024">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPhone_Launch1125">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPhone_Launch1136x640">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPhone_Launch1242">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPhone_Launch1242x2688">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPhone_Launch1334">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPhone_Launch1792">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPhone_Launch2208">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPhone_Launch2436">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPhone_Launch2688x1242">
                     <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
                     </Platform>
@@ -507,6 +757,28 @@
                     </Platform>
                 </DeployClass>
                 <DeployClass Name="iPhone_Launch640x1136">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPhone_Launch750">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPhone_Launch828">
                     <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
                     </Platform>

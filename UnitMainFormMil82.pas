@@ -35,8 +35,6 @@ type
         PanelDelay: TPanel;
         LabelDelayElepsedTime: TLabel;
         LabelProgress: TLabel;
-        LabelWhatDelay: TLabel;
-        LabelDelayTotalTime: TLabel;
         ToolBar6: TToolBar;
         ToolButtonStop: TToolButton;
         Panel2: TPanel;
@@ -45,11 +43,10 @@ type
         ToolButton2: TToolButton;
         PopupMenu1: TPopupMenu;
         N1: TMenuItem;
-        TimerDelay: TTimer;
         TimerPerforming: TTimer;
         LabelStatusBottom1: TLabel;
-    N821: TMenuItem;
-    TabSheetData: TTabSheet;
+        N821: TMenuItem;
+        TabSheetData: TTabSheet;
         procedure FormShow(Sender: TObject);
         procedure FormCreate(Sender: TObject);
         procedure PageControlMainDrawTab(Control: TCustomTabControl;
@@ -65,14 +62,15 @@ type
         procedure FormResize(Sender: TObject);
         procedure ToolButton2Click(Sender: TObject);
         procedure ToolButton3Click(Sender: TObject);
-    procedure N821Click(Sender: TObject);
-    procedure TimerDelayTimer(Sender: TObject);
-    procedure ToolButtonStopClick(Sender: TObject);
+        procedure N821Click(Sender: TObject);
+        procedure ToolButtonStopClick(Sender: TObject);
     private
         { Private declarations }
         procedure AppException(Sender: TObject; E: Exception);
         procedure HandleCopydata(var Message: TMessage); message WM_COPYDATA;
         procedure SetupDelay(i: TDelayInfo);
+        procedure OnWorkComplete(x: TWorkResultInfo);
+        procedure OnWarning(content: string);
     public
         { Public declarations }
 
@@ -88,7 +86,7 @@ implementation
 uses UnitFormLastParty, vclutils, JclDebug, ioutils, UnitFormChartSeries, app,
     services, UnitFormAppConfig, notify_services, HttpRpcClient, superobject,
     UnitFormCharts, dateutils, math, HttpExceptions, UnitFormData,
-  stringgridutils;
+    stringgridutils, UnitFormModalMessage;
 
 function color_work_result(r: Integer): Tcolor;
 begin
@@ -163,13 +161,13 @@ begin
     end;
 
     with FormChartSeries do
-        begin
-            Font.Assign(self.Font);
-            Parent := FormCharts;
-            BorderStyle := bsNone;
-            Align := alClient;
-            Show;
-        end;
+    begin
+        Font.Assign(self.Font);
+        Parent := FormCharts;
+        BorderStyle := bsNone;
+        Align := alClient;
+        Show;
+    end;
 
     with FormCharts do
     begin
@@ -192,8 +190,6 @@ begin
     end;
     PageControlMain.ActivePageIndex := 0;
 
-
-
     SetOnWorkStarted(
         procedure(s: string)
         begin
@@ -204,36 +200,7 @@ begin
             LabelStatusBottom1.Caption := '';
         end);
 
-    SetOnWorkComplete(
-        procedure(x: TWorkResultInfo)
-        begin
-
-            ImageInfo.Visible := x.Result <> 2;
-            ImageError.Visible := x.Result = 2;
-
-            if PanelMessageBox.Visible then
-                RichEditlMessageBoxText.Text := RichEditlMessageBoxText.Text +
-                  #10#13#10#13
-            else
-                RichEditlMessageBoxText.Text := '';
-
-            PanelMessageBoxTitle.Caption := x.Work;
-            RichEditlMessageBoxText.Text := RichEditlMessageBoxText.Text +
-              x.Message;
-            RichEditlMessageBoxText.Font.Color := color_work_result(x.Result);
-            LabelStatusTop.Font.Color := color_work_result(x.Result);
-
-            PanelMessageBox.Show;
-            PanelMessageBox.BringToFront;
-            FormResize(self);
-
-            ToolBarStop.Visible := false;
-            LabelStatusTop.Caption := TimeToStr(now) + ' ' + x.Work + ': ' +
-              x.Message;
-            TimerPerforming.Enabled := false;
-            LabelStatusBottom1.Caption := '';
-            FormLastParty.OnWorkComplete;
-        end);
+    SetOnWorkComplete(OnWorkComplete);
 
     SetOnAddrError(
         procedure(x: TAddrError)
@@ -258,21 +225,22 @@ begin
 
     SetOnDelay(SetupDelay);
 
-    SetOnWarning(
-        procedure(content: string)
-        var
-            s: string;
+    SetOnEndDelay(
+        procedure(s: string)
         begin
-            s := content + #10#13#10#13;
-            s := s + 'Нажмите OK чтобы игнорировать ошибку и продолжить работу.'#10#13#10#13;
-            s := s + 'Нажмите ОТМЕНА чтобы прервать.';
-            if MessageDlg(s, mtWarning, mbOKCancel, 0) <> IDOK then
-                TRunnerSvc.Cancel;
+            PanelDelay.Hide;
+        end);
+
+    SetOnWarning(OnWarning);
+
+    SetOnStatus(
+        procedure(s: string)
+        begin
+            LabelStatusTop.Caption := TimeToStr(now) + ' ' + s;
         end);
 
     NotifyServices_SetEnabled(true);
     TPeerSvc.Init;
-
 
 end;
 
@@ -304,10 +272,10 @@ begin
     PanelMessageBox.Hide;
 
     if PageControl.ActivePage = TabSheetCharts then
-        FormCharts.FetchYearsMonths else
-    if PageControl.ActivePage = TabSheetData then
-        FormData.FetchYearsMonths else
-    if PageControl.ActivePage = TabSheetParty then
+        FormCharts.FetchYearsMonths
+    else if PageControl.ActivePage = TabSheetData then
+        FormData.FetchYearsMonths
+    else if PageControl.ActivePage = TabSheetParty then
     begin
         FormLastParty.setup_products;
     end;
@@ -318,23 +286,6 @@ procedure TMainFormMil82.PageControlMainDrawTab(Control: TCustomTabControl;
 TabIndex: Integer; const Rect: TRect; Active: Boolean);
 begin
     PageControl_DrawVerticalTab(Control, TabIndex, Rect, Active);
-end;
-
-procedure TMainFormMil82.TimerDelayTimer(Sender: TObject);
-var
-    s: string;
-    v: TDateTime;
-begin
-    s := LabelDelayElepsedTime.Caption;
-    if TryStrToTime(s, v) then
-        LabelDelayElepsedTime.Caption := FormatDateTime('HH:mm:ss',
-          IncSecond(v));
-    ProgressBar1.Position := ProgressBar1.Position +
-      Integer(TimerDelay.Interval);
-
-    LabelProgress.Caption :=
-      inttostr(ceil(ProgressBar1.Position * 100 / ProgressBar1.Max)) + '%';
-
 end;
 
 procedure TMainFormMil82.TimerPerformingTimer(Sender: TObject);
@@ -464,15 +415,95 @@ begin
 end;
 
 procedure TMainFormMil82.SetupDelay(i: TDelayInfo);
+var
+    v: TDateTime;
 begin
-    LabelDelayElepsedTime.Caption := '00:00:00';
-    LabelDelayTotalTime.Caption := FormatDateTime('HH:mm:ss', IncSecond(i.Seconds));
-    LabelWhatDelay.Caption := i.What;
+
+    PanelDelay.Visible := true;
+
     LabelProgress.Caption := '';
-    ProgressBar1.Position := 0;
-    ProgressBar1.Max := i.Seconds * 1000;
-    PanelDelay.Visible := i.Run;
-    TimerDelay.Enabled := i.Run;
+    ProgressBar1.Position := i.ElapsedSeconds * 1000;
+    ProgressBar1.Max := i.TotalSeconds * 1000;
+    v := 0;
+    LabelDelayElepsedTime.Caption := FormatDateTime('HH:mm:ss',
+      IncSecond(0, i.ElapsedSeconds));
+    LabelProgress.Caption :=
+      inttostr(ceil(ProgressBar1.Position * 100 / ProgressBar1.Max)) + '%';
+end;
+
+procedure TMainFormMil82.OnWorkComplete(x: TWorkResultInfo);
+var
+    s: string;
+begin
+    ToolBarStop.Visible := false;
+
+    TimerPerforming.Enabled := false;
+
+    if RichEditlMessageBoxText.Lines.Count > 14 then
+        RichEditlMessageBoxText.ScrollBars := ssVertical
+    else
+        RichEditlMessageBoxText.ScrollBars := ssNone;
+
+    LabelStatusTop.Caption := TimeToStr(now) + ': ' + X.Work;
+
+    case X.Result of
+        0:
+            begin
+                ImageInfo.Show;
+                ImageError.Hide;
+                LabelStatusTop.Font.Color := clNavy;
+                RichEditlMessageBoxText.Font.Color := clNavy;
+                PanelMessageBoxTitle.Caption := X.Work + ': успешно';
+                LabelStatusTop.Caption := LabelStatusTop.Caption + ': успешно';
+            end;
+        1:
+            begin
+                ImageInfo.Show;
+                ImageError.Hide;
+                LabelStatusTop.Font.Color := clMaroon;
+                RichEditlMessageBoxText.Font.Color := clMaroon;
+                PanelMessageBoxTitle.Caption := X.Work + ': прервано';
+                LabelStatusTop.Caption := LabelStatusTop.Caption + ': прервано';
+            end;
+        2:
+            begin
+                ImageInfo.Hide;
+                ImageError.Show;
+                LabelStatusTop.Font.Color := clRed;
+                RichEditlMessageBoxText.Font.Color := clRed;
+                PanelMessageBoxTitle.Caption := X.Work + ': не выполнено';
+                LabelStatusTop.Caption := LabelStatusTop.Caption +
+                  ': не выполнено';
+            end;
+    else
+        raise Exception.Create('unknown work result: ' + inttostr(X.Result));
+    end;
+
+    RichEditlMessageBoxText.Text := stringreplace(X.Message, ': ',
+      #13#10#9' - ', [rfReplaceAll, rfIgnoreCase]);
+
+    LabelStatusBottom1.Caption := '';
+    PanelMessageBox.Show;
+    PanelMessageBox.BringToFront;
+    FormResize(self);
+    FormLastParty.OnWorkComplete;
+end;
+
+procedure TMainFormMil82.OnWarning(content: string);
+var
+    s: string;
+begin
+    s := content + #10#13#10#13;
+    s := s + '"Принять" - игнорировать ошибку и продолжить.'#10#13#10#13;
+    s := s + '"Отмена" - прервать выполнение.';
+    FormModalMessage.PanelMessageBoxTitle.Caption := 'Предупреждение';
+    FormModalMessage.RichEditlMessageBoxText.Text := content;
+    FormModalMessage.ImageInfo.Hide;
+    FormModalMessage.ImageError.Show;
+
+    FormModalMessage.ShowModal;
+    if FormModalMessage.ModalResult <> mrOk then
+        TRunnerSvc.Cancel;
 end;
 
 end.

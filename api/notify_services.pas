@@ -4,11 +4,11 @@ unit notify_services;
 interface
 uses server_data_types, superobject, Winapi.Windows, Winapi.Messages;
 type
+    TStringHandler = reference to procedure (x:string);
+    TAddrVarValueHandler = reference to procedure (x:TAddrVarValue);
     TAddrErrorHandler = reference to procedure (x:TAddrError);
     TWorkResultInfoHandler = reference to procedure (x:TWorkResultInfo);
     TDelayInfoHandler = reference to procedure (x:TDelayInfo);
-    TStringHandler = reference to procedure (x:string);
-    TAddrVarValueHandler = reference to procedure (x:TAddrVarValue);
     
 
 procedure HandleCopydata(var Message: TMessage);
@@ -20,6 +20,8 @@ procedure SetOnWorkStarted( AHandler : TStringHandler);
 procedure SetOnWorkComplete( AHandler : TWorkResultInfoHandler);
 procedure SetOnWarning( AHandler : TStringHandler);
 procedure SetOnDelay( AHandler : TDelayInfoHandler);
+procedure SetOnEndDelay( AHandler : TStringHandler);
+procedure SetOnStatus( AHandler : TStringHandler);
 
 procedure NotifyServices_SetEnabled(enabled:boolean);
 
@@ -27,8 +29,8 @@ implementation
 uses Grijjy.Bson.Serialization, stringutils, sysutils;
 
 type
-    TServerAppCmd = (CmdPanic, CmdReadVar, CmdAddrError, CmdWorkStarted, CmdWorkComplete, CmdWarning, 
-    CmdDelay);
+    TServerAppCmd = (CmdPanic, CmdReadVar, CmdAddrError, CmdWorkStarted, CmdWorkComplete, CmdWarning, CmdDelay, CmdEndDelay, 
+    CmdStatus);
 
     type _deserializer = record
         class function deserialize<T>(str:string):T;static;
@@ -42,6 +44,8 @@ var
     _OnWorkComplete : TWorkResultInfoHandler;
     _OnWarning : TStringHandler;
     _OnDelay : TDelayInfoHandler;
+    _OnEndDelay : TStringHandler;
+    _OnStatus : TStringHandler;
     _enabled:boolean;
 
 class function _deserializer.deserialize<T>(str:string):T;
@@ -109,6 +113,18 @@ begin
                 raise Exception.Create('_OnDelay must be set');
             _OnDelay(_deserializer.deserialize<TDelayInfo>(str));
         end;
+        CmdEndDelay:
+        begin
+            if not Assigned(_OnEndDelay) then
+                raise Exception.Create('_OnEndDelay must be set');
+            _OnEndDelay(str);
+        end;
+        CmdStatus:
+        begin
+            if not Assigned(_OnStatus) then
+                raise Exception.Create('_OnStatus must be set');
+            _OnStatus(str);
+        end;
         
     else
         raise Exception.Create('wrong message: ' + IntToStr(Message.WParam));
@@ -156,6 +172,18 @@ begin
     if Assigned(_OnDelay) then
         raise Exception.Create('_OnDelay already set');
     _OnDelay := AHandler;
+end;
+procedure SetOnEndDelay( AHandler : TStringHandler);
+begin
+    if Assigned(_OnEndDelay) then
+        raise Exception.Create('_OnEndDelay already set');
+    _OnEndDelay := AHandler;
+end;
+procedure SetOnStatus( AHandler : TStringHandler);
+begin
+    if Assigned(_OnStatus) then
+        raise Exception.Create('_OnStatus already set');
+    _OnStatus := AHandler;
 end;
 
 

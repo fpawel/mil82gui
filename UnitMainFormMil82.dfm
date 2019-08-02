@@ -25,7 +25,7 @@ object MainFormMil82: TMainFormMil82
     Height = 21
     Align = alBottom
     Caption = 'LabelStatus'
-    ExplicitWidth = 79
+    ExplicitWidth = 80
   end
   object PageControlMain: TPageControl
     Left = 0
@@ -453,7 +453,7 @@ object MainFormMil82: TMainFormMil82
       Visible = False
       object LabelDelayElepsedTime: TLabel
         AlignWithMargins = True
-        Left = 38
+        Left = 5
         Top = 3
         Width = 58
         Height = 25
@@ -468,6 +468,7 @@ object MainFormMil82: TMainFormMil82
         Font.Style = []
         ParentFont = False
         Layout = tlCenter
+        ExplicitLeft = 38
         ExplicitHeight = 18
       end
       object LabelProgress: TLabel
@@ -482,44 +483,6 @@ object MainFormMil82: TMainFormMil82
         Caption = '50%'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clTeal
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        Layout = tlCenter
-        ExplicitHeight = 18
-      end
-      object LabelWhatDelay: TLabel
-        AlignWithMargins = True
-        Left = 5
-        Top = 3
-        Width = 23
-        Height = 25
-        Margins.Left = 5
-        Margins.Right = 5
-        Align = alLeft
-        Caption = '?dd'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clNavy
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        Layout = tlCenter
-        ExplicitHeight = 18
-      end
-      object LabelDelayTotalTime: TLabel
-        AlignWithMargins = True
-        Left = 106
-        Top = 3
-        Width = 58
-        Height = 25
-        Margins.Left = 5
-        Margins.Right = 5
-        Align = alLeft
-        Caption = '00:00:00'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clNavy
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
@@ -554,9 +517,9 @@ object MainFormMil82: TMainFormMil82
         end
       end
       object Panel2: TPanel
-        Left = 169
+        Left = 68
         Top = 0
-        Width = 510
+        Width = 611
         Height = 31
         Align = alClient
         Alignment = taLeftJustify
@@ -570,16 +533,19 @@ object MainFormMil82: TMainFormMil82
         ParentBackground = False
         ParentFont = False
         TabOrder = 1
+        ExplicitLeft = 169
+        ExplicitWidth = 510
         DesignSize = (
-          510
+          611
           31)
         object ProgressBar1: TProgressBar
           Left = 3
           Top = 8
-          Width = 504
+          Width = 605
           Height = 15
           Anchors = [akLeft, akTop, akRight, akBottom]
           TabOrder = 0
+          ExplicitWidth = 504
         end
       end
     end
@@ -1259,13 +1225,6 @@ object MainFormMil82: TMainFormMil82
       Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1072' '#1052#1048#1051'-82'
       OnClick = N821Click
     end
-  end
-  object TimerDelay: TTimer
-    Enabled = False
-    Interval = 200
-    OnTimer = TimerDelayTimer
-    Left = 216
-    Top = 56
   end
   object TimerPerforming: TTimer
     Enabled = False

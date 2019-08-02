@@ -37,9 +37,17 @@ type
         
     end;
  
+    TCell = record
+    public 
+        ValueType : Integer;
+        Text : string;
+        Detail : string;
+        
+    end;
+ 
     TRow = record
     public 
-        Cells : TArray<string>;
+        Cells : TArray<TCell>;
         
     end;
  
@@ -141,8 +149,8 @@ type
  
     TDelayInfo = record
     public 
-        Run : Boolean;
-        Seconds : Integer;
+        TotalSeconds : Integer;
+        ElapsedSeconds : Integer;
         What : string;
         
     end;

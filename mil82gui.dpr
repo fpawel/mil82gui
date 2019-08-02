@@ -7,27 +7,26 @@ uses
   supertimezone in 'utils\superobject\supertimezone.pas',
   supertypes in 'utils\superobject\supertypes.pas',
   superxmlparser in 'utils\superobject\superxmlparser.pas',
-  Grijjy.BinaryCoding in '..\..\grijjy\GrijjyFoundation\Grijjy.BinaryCoding.pas',
-  Grijjy.Bson.IO in '..\..\grijjy\GrijjyFoundation\Grijjy.Bson.IO.pas',
-  Grijjy.Bson in '..\..\grijjy\GrijjyFoundation\Grijjy.Bson.pas',
-  Grijjy.Bson.Path in '..\..\grijjy\GrijjyFoundation\Grijjy.Bson.Path.pas',
-  Grijjy.Bson.Serialization in '..\..\grijjy\GrijjyFoundation\Grijjy.Bson.Serialization.pas',
-  Grijjy.Collections in '..\..\grijjy\GrijjyFoundation\Grijjy.Collections.pas',
-  Grijjy.Console in '..\..\grijjy\GrijjyFoundation\Grijjy.Console.pas',
-  Grijjy.DateUtils in '..\..\grijjy\GrijjyFoundation\Grijjy.DateUtils.pas',
-  Grijjy.Hash in '..\..\grijjy\GrijjyFoundation\Grijjy.Hash.pas',
-  Grijjy.Hooking in '..\..\grijjy\GrijjyFoundation\Grijjy.Hooking.pas',
-  Grijjy.Http in '..\..\grijjy\GrijjyFoundation\Grijjy.Http.pas',
-  Grijjy.JWT in '..\..\grijjy\GrijjyFoundation\Grijjy.JWT.pas',
-  Grijjy.MemoryPool in '..\..\grijjy\GrijjyFoundation\Grijjy.MemoryPool.pas',
-  Grijjy.PropertyBag in '..\..\grijjy\GrijjyFoundation\Grijjy.PropertyBag.pas',
-  Grijjy.SocketPool.Win in '..\..\grijjy\GrijjyFoundation\Grijjy.SocketPool.Win.pas',
-  Grijjy.System in '..\..\grijjy\GrijjyFoundation\Grijjy.System.pas',
-  Grijjy.SysUtils in '..\..\grijjy\GrijjyFoundation\Grijjy.SysUtils.pas',
-  Grijjy.Uri in '..\..\grijjy\GrijjyFoundation\Grijjy.Uri.pas',
-  Grijjy.Winsock2 in '..\..\grijjy\GrijjyFoundation\Grijjy.Winsock2.pas',
-  Grijjy.OpenSSL in '..\..\grijjy\GrijjyFoundation\Grijjy.OpenSSL.pas',
-  Grijjy.OpenSSL.API in '..\..\grijjy\GrijjyFoundation\Grijjy.OpenSSL.API.pas',
+  Grijjy.BinaryCoding in 'grijjy\Grijjy.BinaryCoding.pas',
+  Grijjy.Bson in 'grijjy\Grijjy.Bson.pas',
+  Grijjy.Bson.Serialization in 'grijjy\Grijjy.Bson.Serialization.pas',
+  Grijjy.Console in 'grijjy\Grijjy.Console.pas',
+  Grijjy.DateUtils in 'grijjy\Grijjy.DateUtils.pas',
+  Grijjy.Hash in 'grijjy\Grijjy.Hash.pas',
+  Grijjy.Hooking in 'grijjy\Grijjy.Hooking.pas',
+  Grijjy.Http in 'grijjy\Grijjy.Http.pas',
+  Grijjy.JWT in 'grijjy\Grijjy.JWT.pas',
+  Grijjy.MemoryPool in 'grijjy\Grijjy.MemoryPool.pas',
+  Grijjy.PropertyBag in 'grijjy\Grijjy.PropertyBag.pas',
+  Grijjy.SocketPool.Win in 'grijjy\Grijjy.SocketPool.Win.pas',
+  Grijjy.System in 'grijjy\Grijjy.System.pas',
+  Grijjy.SysUtils in 'grijjy\Grijjy.SysUtils.pas',
+  Grijjy.Uri in 'grijjy\Grijjy.Uri.pas',
+  Grijjy.Winsock2 in 'grijjy\Grijjy.Winsock2.pas',
+  Grijjy.OpenSSL.API in 'grijjy\Grijjy.OpenSSL.API.pas',
+  Grijjy.Bson.IO in 'grijjy\Grijjy.Bson.IO.pas',
+  Grijjy.Collections in 'grijjy\Grijjy.Collections.pas',
+  Grijjy.OpenSSL in 'grijjy\Grijjy.OpenSSL.pas',
   SuperObjectHelp in 'utils\SuperObjectHelp.pas',
   notify_services in 'api\notify_services.pas',
   server_data_types in 'api\server_data_types.pas',
@@ -48,7 +47,8 @@ uses
   HttpRpcClient in 'api\HttpRpcClient.pas',
   HttpClient in 'api\HttpClient.pas',
   HttpExceptions in 'api\HttpExceptions.pas',
-  UnitFormData in 'UnitFormData.pas' {FormData};
+  UnitFormData in 'UnitFormData.pas' {FormData},
+  UnitFormModalMessage in 'UnitFormModalMessage.pas' {FormModalMessage};
 
 {$R *.res}
 
@@ -61,5 +61,6 @@ begin
   Application.CreateForm(TFormAppConfig, FormAppConfig);
   Application.CreateForm(TFormCharts, FormCharts);
   Application.CreateForm(TFormData, FormData);
+  Application.CreateForm(TFormModalMessage, FormModalMessage);
   Application.Run;
 end.

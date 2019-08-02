@@ -91,7 +91,7 @@ begin
 
         Items.Clear;
         for AVar in app.AppVars do
-            Items.Add(AVar.Name);
+            Items.Add( '   ' + AVar.Name);
         ItemIndex := 0;
     end;
 
@@ -331,7 +331,7 @@ begin
         RowCount := length(xs.Rows);
 
         for I := 0 to length(xs.Rows[0].Cells) - 1 do
-            Cells[I, 0] := xs.Rows[0].Cells[I];
+            Cells[I, 0] := xs.Rows[0].Cells[I].Text;
 
         ARow := 0;
 
@@ -342,14 +342,14 @@ begin
             begin
                 SetLength(FMeregedRows, length(FMeregedRows) + 1);
                 FMeregedRows[length(FMeregedRows) - 1].Row := ARow;
-                FMeregedRows[length(FMeregedRows) - 1].Text := _row.Cells[0];
+                FMeregedRows[length(FMeregedRows) - 1].Text := _row.Cells[0].Text;
 
             end
             else
             begin
 
                 for ACol := 0 to ColCount - 1 do
-                    Cells[ACol, ARow] := _row.Cells[ACol];
+                    Cells[ACol, ARow] := _row.Cells[ACol].Text;
 
             end;
             ARow := ARow + 1;

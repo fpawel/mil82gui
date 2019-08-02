@@ -46,6 +46,7 @@ type
          
     end; TPartiesSvc = class 
     public
+        class procedure NewParty;static;
         class function PartiesOfYearMonth( Year: Integer; Month: Integer) : TArray<TPartyCatalogue>;static;
         class function PartyProducts( param1: Int64) : TArray<TProduct>;static;
         class function PartyProductsValues( param1: Int64; param2: Int64) : TTable;static;
@@ -280,6 +281,15 @@ begin
 end;
 
   
+class procedure TPartiesSvc.NewParty;
+var
+    req : ISuperobject;
+begin
+    req := SO;
+    ThttpRpcClient.GetResponse('PartiesSvc.NewParty', req); 
+end;
+
+ 
 class function TPartiesSvc.PartiesOfYearMonth( Year: Integer; Month: Integer) : TArray<TPartyCatalogue>;
 var
     req : ISuperobject;

@@ -229,7 +229,7 @@ begin
     if r <> mrYes then
         exit;
 
-    //
+    TPartiesSvc.NewParty;
     reload_data;
 
 end;
