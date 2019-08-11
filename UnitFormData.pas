@@ -39,12 +39,14 @@ type
           Rect: TRect; State: TGridDrawState);
         procedure StringGrid2TopLeftChanged(Sender: TObject);
         procedure ListBox1Click(Sender: TObject);
+        procedure StringGrid2DblClick(Sender: TObject);
     private
         { Private declarations }
         FYearMonth: TArray<TYearMonth>;
         FParties: TArray<TPartyCatalogue>;
         FMeregedRows: TArray<TMeregedRow>;
         FProducts: TArray<TProduct>;
+        FRows: TArray<TRow>;
         procedure FetchParty(partyID: int64);
     public
         { Public declarations }
@@ -58,7 +60,8 @@ implementation
 
 {$R *.dfm}
 
-uses app, HttpClient, services, dateutils, stringgridutils, stringutils;
+uses app, HttpClient, services, dateutils, stringgridutils, stringutils,
+    UnitFormPopup;
 
 function NewMeregedRow(ARow: integer; Atext: string): TMeregedRow;
 begin
@@ -91,7 +94,7 @@ begin
 
         Items.Clear;
         for AVar in app.AppVars do
-            Items.Add( '   ' + AVar.Name);
+            Items.Add('   ' + AVar.Name);
         ItemIndex := 0;
     end;
 
@@ -166,6 +169,36 @@ begin
     FetchParty(FParties[ARow - 1].partyID);
 end;
 
+procedure TFormData.StringGrid2DblClick(Sender: TObject);
+var
+    r: TRect;
+    pt: TPoint;
+    c: TCell;
+begin
+    with StringGrid2 do
+    begin
+        c := FRows[Row].Cells[Col];
+        if length(c.Detail) = 0 then
+            exit;
+
+        FormPopup.RichEdit1.Text := c.Detail;
+        case c.ValueType of
+            0:
+                FormPopup.RichEdit1.Font.Color := clBlack;
+            1:
+                FormPopup.RichEdit1.Font.Color := clBlue;
+            2:
+                FormPopup.RichEdit1.Font.Color := clRed;
+        end;
+
+        r := CellRect(Col, Row);
+        pt := StringGrid1.ClientToScreen(r.TopLeft);
+        FormPopup.Left := pt.X + 5 + Panel2.Left;
+        FormPopup.Top := pt.Y + 5;
+        FormPopup.Show;
+    end;
+end;
+
 procedure TFormData.StringGrid2DrawCell(Sender: TObject; ACol, ARow: integer;
   Rect: TRect; State: TGridDrawState);
 var
@@ -202,7 +235,18 @@ begin
 
     ta := taCenter;
     if (ACol > 0) ANd (ARow > 0) then
+    begin
         ta := taRightJustify;
+        case FRows[ARow].Cells[ACol].ValueType of
+            0:
+                cnv.Font.Color := clBlack;
+            1:
+                cnv.Font.Color := clBlue;
+            2:
+                cnv.Font.Color := clRed;
+        end;
+
+    end;
 
     DrawCellText(StringGrid2, ACol, ARow, Rect, ta,
       StringGrid2.Cells[ACol, ARow]);
@@ -296,7 +340,7 @@ procedure TFormData.FetchParty(partyID: int64);
 var
     AVar: TVar;
     xs: TTable;
-    _row: trow;
+    _row: TRow;
     ACol, ARow, I: integer;
 begin
 
@@ -312,6 +356,7 @@ begin
         xs := TPartiesSvc.PartyProductsValues(partyID,
           app.AppVars[ListBox1.ItemIndex].Code);
         FProducts := TPartiesSvc.PartyProducts(partyID);
+        FRows := xs.Rows;
     end;
 
     if (length(xs.Rows) = 0) or (length(xs.Rows[0].Cells) = 0) then
@@ -342,7 +387,8 @@ begin
             begin
                 SetLength(FMeregedRows, length(FMeregedRows) + 1);
                 FMeregedRows[length(FMeregedRows) - 1].Row := ARow;
-                FMeregedRows[length(FMeregedRows) - 1].Text := _row.Cells[0].Text;
+                FMeregedRows[length(FMeregedRows) - 1].Text :=
+                  _row.Cells[0].Text;
 
             end
             else

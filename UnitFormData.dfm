@@ -185,6 +185,7 @@ object FormData: TFormData
       ParentBiDiMode = False
       ParentFont = False
       TabOrder = 0
+      OnDblClick = StringGrid2DblClick
       OnDrawCell = StringGrid2DrawCell
       OnTopLeftChanged = StringGrid2TopLeftChanged
       ColWidths = (

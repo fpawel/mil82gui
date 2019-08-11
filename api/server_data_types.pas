@@ -6,59 +6,59 @@ interface
 uses Grijjy.Bson, Grijjy.Bson.Serialization;
 
 type
-     
+    
     TLastPartyProduct = record
-    public 
-        ProductID : Int64;
-        Serial : Integer;
+    public
         Addr : Byte;
         Place : Integer;
         Checked : Boolean;
+        ProductID : Int64;
+        Serial : Integer;
         
     end;
- 
+    
     TParty = record
-    public 
-        ProductType : string;
-        C1 : Double;
+    public
         C2 : Double;
         C3 : Double;
         C4 : Double;
         PartyID : Int64;
         CreatedAt : TDateTime;
+        ProductType : string;
+        C1 : Double;
         
     end;
- 
+    
     TProduct = record
-    public 
+    public
         ProductID : Int64;
         Serial : Integer;
         Addr : Byte;
         
     end;
- 
+    
     TCell = record
-    public 
+    public
         ValueType : Integer;
         Text : string;
         Detail : string;
         
     end;
- 
+    
     TRow = record
-    public 
+    public
         Cells : TArray<TCell>;
         
     end;
- 
+    
     TTable = record
-    public 
+    public
         Rows : TArray<TRow>;
         
     end;
- 
+    
     TPartySettings = record
-    public 
+    public
         ProductType : string;
         C1 : Double;
         C2 : Double;
@@ -66,37 +66,37 @@ type
         C4 : Double;
         
     end;
- 
+    
     TTempPlusMinus = record
-    public 
+    public
         TempPlus : Double;
         TempMinus : Double;
         
     end;
- 
+    
     TUserAppSettings = record
-    public 
-        ComportProducts : string;
-        ComportTemperature : string;
-        ComportGas : string;
-        TemperatureMinus : Double;
-        TemperaturePlus : Double;
-        BlowGasMinutes : Integer;
+    public
         BlowAirMinutes : Integer;
         HoldTemperatureMinutes : Integer;
+        ComportProducts : string;
+        BlowGasMinutes : Integer;
+        TemperatureMinus : Double;
+        TemperaturePlus : Double;
         InterrogateProductVarIntervalMillis : Integer;
+        ComportTemperature : string;
+        ComportGas : string;
         
     end;
- 
+    
     TVar = record
-    public 
+    public
         Code : Word;
         Name : string;
         
     end;
- 
+    
     TChartsBucket = record
-    public 
+    public
         Day : Integer;
         Hour : Integer;
         Minute : Integer;
@@ -105,16 +105,16 @@ type
         Last : Boolean;
         
     end;
- 
+    
     TYearMonth = record
-    public 
-        Year : Integer;
+    public
         Month : Integer;
+        Year : Integer;
         
     end;
- 
+    
     TPartyCatalogue = record
-    public 
+    public
         PartyID : Int64;
         ProductType : string;
         Last : Boolean;
@@ -123,41 +123,39 @@ type
         Minute : Integer;
         
     end;
- 
+    
     TAddrVarValue = record
-    public 
-        Addr : Byte;
+    public
         VarCode : Word;
         Value : Double;
-        
-    end;
- 
-    TAddrError = record
-    public 
         Addr : Byte;
-        Message : string;
         
     end;
- 
+    
+    TAddrError = record
+    public
+        Message : string;
+        Addr : Byte;
+        
+    end;
+    
     TWorkResultInfo = record
-    public 
+    public
         Work : string;
         Result : Integer;
         Message : string;
         
     end;
- 
+    
     TDelayInfo = record
-    public 
-        TotalSeconds : Integer;
+    public
         ElapsedSeconds : Integer;
         What : string;
+        TotalSeconds : Integer;
         
     end;
+    
 
-
-implementation 
-
-
+implementation
 
 end.

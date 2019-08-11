@@ -48,7 +48,8 @@ uses
   HttpClient in 'api\HttpClient.pas',
   HttpExceptions in 'api\HttpExceptions.pas',
   UnitFormData in 'UnitFormData.pas' {FormData},
-  UnitFormModalMessage in 'UnitFormModalMessage.pas' {FormModalMessage};
+  UnitFormModalMessage in 'UnitFormModalMessage.pas' {FormModalMessage},
+  UnitFormPopup in 'UnitFormPopup.pas' {FormPopup};
 
 {$R *.res}
 
@@ -62,5 +63,6 @@ begin
   Application.CreateForm(TFormCharts, FormCharts);
   Application.CreateForm(TFormData, FormData);
   Application.CreateForm(TFormModalMessage, FormModalMessage);
+  Application.CreateForm(TFormPopup, FormPopup);
   Application.Run;
 end.

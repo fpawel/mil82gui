@@ -2,9 +2,11 @@
 unit notify_services;
 
 interface
-uses server_data_types, superobject, Winapi.Windows, Winapi.Messages;
+
+uses superobject, Winapi.Windows, Winapi.Messages, server_data_types;
+
 type
-    TStringHandler = reference to procedure (x:string);
+    stringHandler = reference to procedure (x:string);
     TAddrVarValueHandler = reference to procedure (x:TAddrVarValue);
     TAddrErrorHandler = reference to procedure (x:TAddrError);
     TWorkResultInfoHandler = reference to procedure (x:TWorkResultInfo);
@@ -13,19 +15,20 @@ type
 
 procedure HandleCopydata(var Message: TMessage);
 
-procedure SetOnPanic( AHandler : TStringHandler);
+procedure SetOnPanic( AHandler : stringHandler);
 procedure SetOnReadVar( AHandler : TAddrVarValueHandler);
 procedure SetOnAddrError( AHandler : TAddrErrorHandler);
-procedure SetOnWorkStarted( AHandler : TStringHandler);
+procedure SetOnWorkStarted( AHandler : stringHandler);
 procedure SetOnWorkComplete( AHandler : TWorkResultInfoHandler);
-procedure SetOnWarning( AHandler : TStringHandler);
+procedure SetOnWarning( AHandler : stringHandler);
 procedure SetOnDelay( AHandler : TDelayInfoHandler);
-procedure SetOnEndDelay( AHandler : TStringHandler);
-procedure SetOnStatus( AHandler : TStringHandler);
+procedure SetOnEndDelay( AHandler : stringHandler);
+procedure SetOnStatus( AHandler : stringHandler);
 
 procedure NotifyServices_SetEnabled(enabled:boolean);
 
 implementation 
+
 uses Grijjy.Bson.Serialization, stringutils, sysutils;
 
 type
@@ -37,15 +40,15 @@ type
     end;
 
 var
-    _OnPanic : TStringHandler;
+    _OnPanic : stringHandler;
     _OnReadVar : TAddrVarValueHandler;
     _OnAddrError : TAddrErrorHandler;
-    _OnWorkStarted : TStringHandler;
+    _OnWorkStarted : stringHandler;
     _OnWorkComplete : TWorkResultInfoHandler;
-    _OnWarning : TStringHandler;
+    _OnWarning : stringHandler;
     _OnDelay : TDelayInfoHandler;
-    _OnEndDelay : TStringHandler;
-    _OnStatus : TStringHandler;
+    _OnEndDelay : stringHandler;
+    _OnStatus : stringHandler;
     _enabled:boolean;
 
 class function _deserializer.deserialize<T>(str:string):T;
@@ -131,7 +134,7 @@ begin
     end;
 end;
 
-procedure SetOnPanic( AHandler : TStringHandler);
+procedure SetOnPanic( AHandler : stringHandler);
 begin
     if Assigned(_OnPanic) then
         raise Exception.Create('_OnPanic already set');
@@ -149,7 +152,7 @@ begin
         raise Exception.Create('_OnAddrError already set');
     _OnAddrError := AHandler;
 end;
-procedure SetOnWorkStarted( AHandler : TStringHandler);
+procedure SetOnWorkStarted( AHandler : stringHandler);
 begin
     if Assigned(_OnWorkStarted) then
         raise Exception.Create('_OnWorkStarted already set');
@@ -161,7 +164,7 @@ begin
         raise Exception.Create('_OnWorkComplete already set');
     _OnWorkComplete := AHandler;
 end;
-procedure SetOnWarning( AHandler : TStringHandler);
+procedure SetOnWarning( AHandler : stringHandler);
 begin
     if Assigned(_OnWarning) then
         raise Exception.Create('_OnWarning already set');
@@ -173,13 +176,13 @@ begin
         raise Exception.Create('_OnDelay already set');
     _OnDelay := AHandler;
 end;
-procedure SetOnEndDelay( AHandler : TStringHandler);
+procedure SetOnEndDelay( AHandler : stringHandler);
 begin
     if Assigned(_OnEndDelay) then
         raise Exception.Create('_OnEndDelay already set');
     _OnEndDelay := AHandler;
 end;
-procedure SetOnStatus( AHandler : TStringHandler);
+procedure SetOnStatus( AHandler : stringHandler);
 begin
     if Assigned(_OnStatus) then
         raise Exception.Create('_OnStatus already set');
