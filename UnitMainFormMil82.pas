@@ -117,12 +117,7 @@ var
 begin
     NotifyServices_SetEnabled(false);
     HttpRpcClient.TIMEOUT_CONNECT := 10;
-    try
-        TPeerSvc.Close;
-    except
-        on ERpcNoResponseException do
-            exit;
-    end;
+    notify_services.CloseServerWindow;
 
     fs := TFileStream.Create(ChangeFileExt(paramstr(0), '.position'),
       fmOpenWrite or fmCreate);
@@ -240,8 +235,6 @@ begin
         end);
 
     NotifyServices_SetEnabled(true);
-    TPeerSvc.Init;
-
 end;
 
 procedure TMainFormMil82.FormMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -401,12 +394,7 @@ begin
     begin
         NotifyServices_SetEnabled(false);
         HttpRpcClient.TIMEOUT_CONNECT := 10;
-        try
-            TPeerSvc.Close;
-        except
-            on ERpcNoResponseException do
-                exit;
-        end;
+        notify_services.CloseServerWindow;
 
         Application.OnException := nil;
         Application.Terminate;

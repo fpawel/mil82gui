@@ -6,24 +6,25 @@ interface
 uses superobject, Winapi.Windows, Winapi.Messages, server_data_types;
 
 type
-    stringHandler = reference to procedure (x:string);
+    TDelayInfoHandler = reference to procedure (x:TDelayInfo);
+    TStringHandler = reference to procedure (x:string);
     TAddrVarValueHandler = reference to procedure (x:TAddrVarValue);
     TAddrErrorHandler = reference to procedure (x:TAddrError);
     TWorkResultInfoHandler = reference to procedure (x:TWorkResultInfo);
-    TDelayInfoHandler = reference to procedure (x:TDelayInfo);
     
 
 procedure HandleCopydata(var Message: TMessage);
+procedure CloseServerWindow;
 
-procedure SetOnPanic( AHandler : stringHandler);
+procedure SetOnPanic( AHandler : TStringHandler);
 procedure SetOnReadVar( AHandler : TAddrVarValueHandler);
 procedure SetOnAddrError( AHandler : TAddrErrorHandler);
-procedure SetOnWorkStarted( AHandler : stringHandler);
+procedure SetOnWorkStarted( AHandler : TStringHandler);
 procedure SetOnWorkComplete( AHandler : TWorkResultInfoHandler);
-procedure SetOnWarning( AHandler : stringHandler);
+procedure SetOnWarning( AHandler : TStringHandler);
 procedure SetOnDelay( AHandler : TDelayInfoHandler);
-procedure SetOnEndDelay( AHandler : stringHandler);
-procedure SetOnStatus( AHandler : stringHandler);
+procedure SetOnEndDelay( AHandler : TStringHandler);
+procedure SetOnStatus( AHandler : TStringHandler);
 
 procedure NotifyServices_SetEnabled(enabled:boolean);
 
@@ -40,16 +41,21 @@ type
     end;
 
 var
-    _OnPanic : stringHandler;
+    _OnPanic : TStringHandler;
     _OnReadVar : TAddrVarValueHandler;
     _OnAddrError : TAddrErrorHandler;
-    _OnWorkStarted : stringHandler;
+    _OnWorkStarted : TStringHandler;
     _OnWorkComplete : TWorkResultInfoHandler;
-    _OnWarning : stringHandler;
+    _OnWarning : TStringHandler;
     _OnDelay : TDelayInfoHandler;
-    _OnEndDelay : stringHandler;
-    _OnStatus : stringHandler;
+    _OnEndDelay : TStringHandler;
+    _OnStatus : TStringHandler;
     _enabled:boolean;
+
+procedure CloseServerWindow;
+begin
+    SendMessage(FindWindow('Mil82ServerWindow', nil), WM_CLOSE, 0, 0)
+end;
 
 class function _deserializer.deserialize<T>(str:string):T;
 begin
@@ -134,7 +140,7 @@ begin
     end;
 end;
 
-procedure SetOnPanic( AHandler : stringHandler);
+procedure SetOnPanic( AHandler : TStringHandler);
 begin
     if Assigned(_OnPanic) then
         raise Exception.Create('_OnPanic already set');
@@ -152,7 +158,7 @@ begin
         raise Exception.Create('_OnAddrError already set');
     _OnAddrError := AHandler;
 end;
-procedure SetOnWorkStarted( AHandler : stringHandler);
+procedure SetOnWorkStarted( AHandler : TStringHandler);
 begin
     if Assigned(_OnWorkStarted) then
         raise Exception.Create('_OnWorkStarted already set');
@@ -164,7 +170,7 @@ begin
         raise Exception.Create('_OnWorkComplete already set');
     _OnWorkComplete := AHandler;
 end;
-procedure SetOnWarning( AHandler : stringHandler);
+procedure SetOnWarning( AHandler : TStringHandler);
 begin
     if Assigned(_OnWarning) then
         raise Exception.Create('_OnWarning already set');
@@ -176,13 +182,13 @@ begin
         raise Exception.Create('_OnDelay already set');
     _OnDelay := AHandler;
 end;
-procedure SetOnEndDelay( AHandler : stringHandler);
+procedure SetOnEndDelay( AHandler : TStringHandler);
 begin
     if Assigned(_OnEndDelay) then
         raise Exception.Create('_OnEndDelay already set');
     _OnEndDelay := AHandler;
 end;
-procedure SetOnStatus( AHandler : stringHandler);
+procedure SetOnStatus( AHandler : TStringHandler);
 begin
     if Assigned(_OnStatus) then
         raise Exception.Create('_OnStatus already set');

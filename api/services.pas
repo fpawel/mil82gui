@@ -40,16 +40,10 @@ type
          
     end;
 
-    TPeerSvc = class
-    public
-        class procedure Close;static;
-        class procedure Init;static;
-         
-    end;
-
     TChartsSvc = class
     public
         class function BucketsOfYearMonth(Year:Integer; Month:Integer):TArray<TChartsBucket>;static;
+        class function DeletePoints(BucketID:Int64; Addr:Byte; VarCode:Word; ValueMinimum:Double; ValueMaximum:Double; TimeMinimum:TTimeDelphi; TimeMaximum:TTimeDelphi):Int64;static;
         class function YearsMonths:TArray<TYearMonth>;static;
          
     end;
@@ -310,30 +304,6 @@ begin
 end;
 
  
-class procedure TPeerSvc.Close;
-var
-    req : ISuperobject;
-begin
-    req := SO;
-
-    
-
-    ThttpRpcClient.GetResponse('PeerSvc.Close', req); 
-end;
-
-
-class procedure TPeerSvc.Init;
-var
-    req : ISuperobject;
-begin
-    req := SO;
-
-    
-
-    ThttpRpcClient.GetResponse('PeerSvc.Init', req); 
-end;
-
- 
 class function TChartsSvc.BucketsOfYearMonth(Year:Integer; Month:Integer):TArray<TChartsBucket>;
 var
     req : ISuperobject;s:string;
@@ -345,6 +315,25 @@ begin
     
 
     ThttpRpcClient.Call('ChartsSvc.BucketsOfYearMonth', req, Result); 
+end;
+
+
+class function TChartsSvc.DeletePoints(BucketID:Int64; Addr:Byte; VarCode:Word; ValueMinimum:Double; ValueMaximum:Double; TimeMinimum:TTimeDelphi; TimeMaximum:TTimeDelphi):Int64;
+var
+    req : ISuperobject;s:string;
+begin
+    req := SO;
+
+    SuperObject_SetField(req, 'BucketID', BucketID); 
+    SuperObject_SetField(req, 'Addr', Addr); 
+    SuperObject_SetField(req, 'VarCode', VarCode); 
+    SuperObject_SetField(req, 'ValueMinimum', ValueMinimum); 
+    SuperObject_SetField(req, 'ValueMaximum', ValueMaximum); 
+    TgoBsonSerializer.serialize(TimeMinimum, s); req['TimeMinimum'] := SO(s); 
+    TgoBsonSerializer.serialize(TimeMaximum, s); req['TimeMaximum'] := SO(s); 
+    
+
+    SuperObject_Get(ThttpRpcClient.GetResponse('ChartsSvc.DeletePoints', req), Result); 
 end;
 
 

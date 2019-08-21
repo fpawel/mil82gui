@@ -9,11 +9,11 @@ type
     
     TLastPartyProduct = record
     public
+        Serial : Integer;
         Addr : Byte;
         Place : Integer;
         Checked : Boolean;
         ProductID : Int64;
-        Serial : Integer;
         
     end;
     
@@ -59,11 +59,11 @@ type
     
     TPartySettings = record
     public
-        ProductType : string;
-        C1 : Double;
         C2 : Double;
         C3 : Double;
         C4 : Double;
+        ProductType : string;
+        C1 : Double;
         
     end;
     
@@ -79,12 +79,12 @@ type
         BlowAirMinutes : Integer;
         HoldTemperatureMinutes : Integer;
         ComportProducts : string;
-        BlowGasMinutes : Integer;
-        TemperatureMinus : Double;
+        ComportGas : string;
         TemperaturePlus : Double;
         InterrogateProductVarIntervalMillis : Integer;
         ComportTemperature : string;
-        ComportGas : string;
+        TemperatureMinus : Double;
+        BlowGasMinutes : Integer;
         
     end;
     
@@ -106,36 +106,48 @@ type
         
     end;
     
+    TTimeDelphi = record
+    public
+        Minute : Integer;
+        Second : Integer;
+        Millisecond : Integer;
+        Year : Integer;
+        Month : Integer;
+        Day : Integer;
+        Hour : Integer;
+        
+    end;
+    
     TYearMonth = record
     public
-        Month : Integer;
         Year : Integer;
+        Month : Integer;
         
     end;
     
     TPartyCatalogue = record
     public
+        Hour : Integer;
+        Minute : Integer;
         PartyID : Int64;
         ProductType : string;
         Last : Boolean;
         Day : Integer;
-        Hour : Integer;
-        Minute : Integer;
         
     end;
     
     TAddrVarValue = record
     public
+        Addr : Byte;
         VarCode : Word;
         Value : Double;
-        Addr : Byte;
         
     end;
     
     TAddrError = record
     public
-        Message : string;
         Addr : Byte;
+        Message : string;
         
     end;
     
@@ -149,9 +161,9 @@ type
     
     TDelayInfo = record
     public
+        TotalSeconds : Integer;
         ElapsedSeconds : Integer;
         What : string;
-        TotalSeconds : Integer;
         
     end;
     

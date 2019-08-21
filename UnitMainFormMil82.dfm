@@ -49,14 +49,26 @@ object MainFormMil82: TMainFormMil82
     object TabSheetData: TTabSheet
       Caption = #1044#1072#1085#1085#1099#1077
       ImageIndex = 3
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
     end
     object TabSheetJournal: TTabSheet
       Caption = #1046#1091#1088#1085#1072#1083
       ImageIndex = 3
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
     end
     object TabSheetCharts: TTabSheet
       Caption = #1043#1088#1072#1092#1080#1082#1080
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
     end
   end
   object PanelMessageBox: TPanel
@@ -468,7 +480,6 @@ object MainFormMil82: TMainFormMil82
         Font.Style = []
         ParentFont = False
         Layout = tlCenter
-        ExplicitLeft = 38
         ExplicitHeight = 18
       end
       object LabelProgress: TLabel
@@ -533,8 +544,6 @@ object MainFormMil82: TMainFormMil82
         ParentBackground = False
         ParentFont = False
         TabOrder = 1
-        ExplicitLeft = 169
-        ExplicitWidth = 510
         DesignSize = (
           611
           31)
@@ -545,7 +554,6 @@ object MainFormMil82: TMainFormMil82
           Height = 15
           Anchors = [akLeft, akTop, akRight, akBottom]
           TabOrder = 0
-          ExplicitWidth = 504
         end
       end
     end
