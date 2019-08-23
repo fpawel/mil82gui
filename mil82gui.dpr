@@ -49,7 +49,8 @@ uses
   HttpExceptions in 'api\HttpExceptions.pas',
   UnitFormData in 'UnitFormData.pas' {FormData},
   UnitFormModalMessage in 'UnitFormModalMessage.pas' {FormModalMessage},
-  UnitFormPopup in 'UnitFormPopup.pas' {FormPopup};
+  UnitFormPopup in 'UnitFormPopup.pas' {FormPopup},
+  UnitFormPartyData in 'UnitFormPartyData.pas' {FormPartyData};
 
 {$R *.res}
 
@@ -64,5 +65,6 @@ begin
   Application.CreateForm(TFormData, FormData);
   Application.CreateForm(TFormModalMessage, FormModalMessage);
   Application.CreateForm(TFormPopup, FormPopup);
+  Application.CreateForm(TFormPartyData, FormPartyData);
   Application.Run;
 end.

@@ -86,7 +86,7 @@ implementation
 uses UnitFormLastParty, vclutils, JclDebug, ioutils, UnitFormChartSeries, app,
     services, UnitFormAppConfig, notify_services, HttpRpcClient, superobject,
     UnitFormCharts, dateutils, math, HttpExceptions, UnitFormData,
-    stringgridutils, UnitFormModalMessage;
+    stringgridutils, UnitFormModalMessage, UnitFormPartyData;
 
 function color_work_result(r: Integer): Tcolor;
 begin
@@ -117,7 +117,7 @@ var
 begin
     NotifyServices_SetEnabled(false);
     HttpRpcClient.TIMEOUT_CONNECT := 10;
-    notify_services.CloseServerWindow;
+    //notify_services.CloseServerWindow;
 
     fs := TFileStream.Create(ChangeFileExt(paramstr(0), '.position'),
       fmOpenWrite or fmCreate);
@@ -172,6 +172,16 @@ begin
         Align := alClient;
         Show;
         FetchYearsMonths;
+    end;
+
+    with FormPartyData do
+    begin
+        Font.Assign(self.Font);
+        Parent := FormData.TabSheetParty;
+        BorderStyle := bsNone;
+        Align := alClient;
+        //FetchParty(0);
+        Show;
     end;
 
     with FormData do

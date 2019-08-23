@@ -72,7 +72,7 @@ object FormData: TFormData
       Left = 3
       Top = 34
       Width = 264
-      Height = 363
+      Height = 555
       Align = alClient
       BorderStyle = bsNone
       ColCount = 4
@@ -93,6 +93,7 @@ object FormData: TFormData
       TabOrder = 1
       OnDrawCell = StringGrid1DrawCell
       OnSelectCell = StringGrid1SelectCell
+      ExplicitLeft = 5
       ColWidths = (
         64
         64
@@ -101,128 +102,17 @@ object FormData: TFormData
       RowHeights = (
         22)
     end
-    object Panel4: TPanel
-      Left = 0
-      Top = 400
-      Width = 270
-      Height = 192
-      Align = alBottom
-      BevelOuter = bvNone
-      TabOrder = 2
-      object Label1: TLabel
-        Left = 0
-        Top = 0
-        Width = 270
-        Height = 13
-        Align = alTop
-        Caption = #1055#1088#1080#1073#1086#1088#1099' '#1087#1072#1088#1090#1080#1080
-        ExplicitWidth = 84
-      end
-      object StringGrid3: TStringGrid
-        AlignWithMargins = True
-        Left = 3
-        Top = 16
-        Width = 264
-        Height = 173
-        Align = alClient
-        BorderStyle = bsNone
-        ColCount = 3
-        DefaultRowHeight = 22
-        DefaultDrawing = False
-        FixedColor = clBackground
-        FixedCols = 0
-        RowCount = 1
-        FixedRows = 0
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        GradientEndColor = clBlack
-        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect]
-        ParentFont = False
-        TabOrder = 0
-        OnDrawCell = StringGrid1DrawCell
-        ColWidths = (
-          64
-          64
-          64)
-        RowHeights = (
-          22)
-      end
-    end
   end
-  object Panel2: TPanel
+  object PageControl1: TPageControl
     Left = 275
     Top = 0
     Width = 725
     Height = 592
+    ActivePage = TabSheetParty
     Align = alClient
-    BevelOuter = bvNone
     TabOrder = 1
-    object StringGrid2: TStringGrid
-      AlignWithMargins = True
-      Left = 3
-      Top = 31
-      Width = 719
-      Height = 558
-      Align = alClient
-      BiDiMode = bdLeftToRight
-      BorderStyle = bsNone
-      ColCount = 3
-      DefaultRowHeight = 22
-      DefaultDrawing = False
-      FixedColor = clBackground
-      FixedCols = 0
-      RowCount = 1
-      FixedRows = 0
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -15
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      GradientEndColor = clBlack
-      ParentBiDiMode = False
-      ParentFont = False
-      TabOrder = 0
-      OnDblClick = StringGrid2DblClick
-      OnDrawCell = StringGrid2DrawCell
-      OnTopLeftChanged = StringGrid2TopLeftChanged
-      ColWidths = (
-        64
-        64
-        64)
-      RowHeights = (
-        22)
-    end
-    object ListBox1: TListBox
-      Left = 0
-      Top = 0
-      Width = 725
-      Height = 28
-      Align = alTop
-      Columns = 8
-      ItemHeight = 13
-      Items.Strings = (
-        '1'
-        '2'
-        '3'
-        '4'
-        '4'
-        '56'
-        '6'
-        '7'
-        '7'
-        '7'
-        '8'
-        '8'
-        '8'
-        '8'
-        '8'
-        '8'
-        '8')
-      TabOrder = 1
-      OnClick = ListBox1Click
+    object TabSheetParty: TTabSheet
+      Caption = #1047#1072#1075#1088#1091#1079#1082#1072
     end
   end
 end

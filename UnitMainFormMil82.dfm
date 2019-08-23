@@ -39,36 +39,24 @@ object MainFormMil82: TMainFormMil82
     TabHeight = 100
     TabOrder = 0
     TabPosition = tpLeft
-    TabWidth = 40
+    TabWidth = 60
     OnChange = PageControlMainChange
     OnDrawTab = PageControlMainDrawTab
     object TabSheetParty: TTabSheet
-      Caption = #1055#1072#1088#1090#1080#1103
+      Caption = #1058#1077#1082#1091#1097#1072#1103' '#1079#1072#1075#1088#1091#1079#1082#1072
       ImageIndex = 4
     end
     object TabSheetData: TTabSheet
       Caption = #1044#1072#1085#1085#1099#1077
       ImageIndex = 3
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
     object TabSheetJournal: TTabSheet
       Caption = #1046#1091#1088#1085#1072#1083
       ImageIndex = 3
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
     object TabSheetCharts: TTabSheet
       Caption = #1043#1088#1072#1092#1080#1082#1080
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
   end
   object PanelMessageBox: TPanel

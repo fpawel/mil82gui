@@ -20,7 +20,7 @@ function GetVCLControlAtPos(c: TWinControl; mousePos: TPoint): TWinControl;
 
 implementation
 
-uses Winapi.commctrl, Winapi.Windows;
+uses Winapi.commctrl, Winapi.Windows, SysUtils;
 
 function GetVCLControlAtPos(c: TWinControl; mousePos: TPoint): TWinControl;
 var
@@ -81,20 +81,13 @@ procedure PageControl_DrawVerticalTab(Control: TCustomTabControl;
 var
     i: integer;
     PageControl: TPageControl;
-    Text: string;
+    word, word2: string;
+    words : TArray<string>;
     x, y: integer;
-    txt_width, txt_height: double;
+    txt_height: double;
 begin
     PageControl := Control as TPageControl;
     Active := PageControl.ActivePageIndex = TabIndex;
-    Text := PageControl.Pages[TabIndex].Caption;
-
-    txt_width := PageControl.Canvas.TextWidth(Text);
-    txt_height := PageControl.Canvas.TextHeight(Text);
-
-    x := Rect.Left + round((Rect.Width - txt_width) / 2.0);
-    y := Rect.Top + round((Rect.Height - txt_height) / 2.0);
-
     if PageControl.ActivePageIndex = TabIndex then
     begin
         PageControl.Canvas.Brush.Color := clGradientInactiveCaption;
@@ -106,7 +99,23 @@ begin
         PageControl.Canvas.Font.Color := clBlack;
     end;
 
-    PageControl.Canvas.TextRect(Rect, x, y, Text);
+    word := PageControl.Pages[TabIndex].Caption;
+    words := word.Split([' '], TStringSplitOptions.ExcludeEmpty);
+
+    x := Rect.Left + 7;
+    txt_height := PageControl.Canvas.TextHeight(word);
+    if Length(words) = 1 then
+    begin
+        y := Rect.Top + round((Rect.Height - txt_height) / 2.0);
+        PageControl.Canvas.TextRect(Rect, x, y, word);
+    end else
+    begin
+        y := Rect.Top + 5;
+        PageControl.Canvas.FillRect(Rect);
+        PageControl.Canvas.TextOut(x, y, words[0]);
+        y := y + Round(txt_height) + 3;
+        PageControl.Canvas.TextOut(x, y, words[1]);
+    end;
 end;
 
 end.
