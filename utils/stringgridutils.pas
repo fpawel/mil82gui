@@ -348,7 +348,7 @@ var
 begin
     with grd do
     begin
-        ColWidths[acol] := DefaultColWidth;
+        //ColWidths[acol] := DefaultColWidth;
         for arow := 0 to rowcount - 1 do
         begin
             w := Canvas.TextWidth(Cells[acol, arow]);

@@ -43,7 +43,7 @@ type
     TChartsSvc = class
     public
         class function BucketsOfYearMonth(Year:Integer; Month:Integer):TArray<TChartsBucket>;static;
-        class function DeletePoints(BucketID:Int64; Addr:Byte; VarCode:Word; ValueMinimum:Double; ValueMaximum:Double; TimeMinimum:TTimeDelphi; TimeMaximum:TTimeDelphi):Int64;static;
+        class function DeletePoints(BucketID:Int64; Addresses:TArray<Byte>; Vars:TArray<Word>; ValueMinimum:Double; ValueMaximum:Double; TimeMinimum:TTimeDelphi; TimeMaximum:TTimeDelphi):Int64;static;
         class function YearsMonths:TArray<TYearMonth>;static;
          
     end;
@@ -318,15 +318,15 @@ begin
 end;
 
 
-class function TChartsSvc.DeletePoints(BucketID:Int64; Addr:Byte; VarCode:Word; ValueMinimum:Double; ValueMaximum:Double; TimeMinimum:TTimeDelphi; TimeMaximum:TTimeDelphi):Int64;
+class function TChartsSvc.DeletePoints(BucketID:Int64; Addresses:TArray<Byte>; Vars:TArray<Word>; ValueMinimum:Double; ValueMaximum:Double; TimeMinimum:TTimeDelphi; TimeMaximum:TTimeDelphi):Int64;
 var
     req : ISuperobject;s:string;
 begin
     req := SO;
 
     SuperObject_SetField(req, 'BucketID', BucketID); 
-    SuperObject_SetField(req, 'Addr', Addr); 
-    SuperObject_SetField(req, 'VarCode', VarCode); 
+    SuperObject_SetField(req, 'Addresses', Addresses); 
+    SuperObject_SetField(req, 'Vars', Vars); 
     SuperObject_SetField(req, 'ValueMinimum', ValueMinimum); 
     SuperObject_SetField(req, 'ValueMaximum', ValueMaximum); 
     TgoBsonSerializer.serialize(TimeMinimum, s); req['TimeMinimum'] := SO(s); 

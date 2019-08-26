@@ -6,11 +6,12 @@ interface
 uses superobject, Winapi.Windows, Winapi.Messages, server_data_types;
 
 type
-    TDelayInfoHandler = reference to procedure (x:TDelayInfo);
     TStringHandler = reference to procedure (x:string);
     TAddrVarValueHandler = reference to procedure (x:TAddrVarValue);
     TAddrErrorHandler = reference to procedure (x:TAddrError);
     TWorkResultInfoHandler = reference to procedure (x:TWorkResultInfo);
+    TDelayInfoHandler = reference to procedure (x:TDelayInfo);
+    TProcedure = reference to procedure;
     
 
 procedure HandleCopydata(var Message: TMessage);
@@ -25,6 +26,7 @@ procedure SetOnWarning( AHandler : TStringHandler);
 procedure SetOnDelay( AHandler : TDelayInfoHandler);
 procedure SetOnEndDelay( AHandler : TStringHandler);
 procedure SetOnStatus( AHandler : TStringHandler);
+procedure SetOnNewChart( AHandler : TProcedure);
 
 procedure NotifyServices_SetEnabled(enabled:boolean);
 
@@ -33,8 +35,8 @@ implementation
 uses Grijjy.Bson.Serialization, stringutils, sysutils;
 
 type
-    TServerAppCmd = (CmdPanic, CmdReadVar, CmdAddrError, CmdWorkStarted, CmdWorkComplete, CmdWarning, CmdDelay, CmdEndDelay, 
-    CmdStatus);
+    TServerAppCmd = (CmdPanic, CmdReadVar, CmdAddrError, CmdWorkStarted, CmdWorkComplete, CmdWarning, CmdDelay, CmdEndDelay, CmdStatus, 
+    CmdNewChart);
 
     type _deserializer = record
         class function deserialize<T>(str:string):T;static;
@@ -50,6 +52,7 @@ var
     _OnDelay : TDelayInfoHandler;
     _OnEndDelay : TStringHandler;
     _OnStatus : TStringHandler;
+    _OnNewChart : TProcedure;
     _enabled:boolean;
 
 procedure CloseServerWindow;
@@ -134,6 +137,12 @@ begin
                 raise Exception.Create('_OnStatus must be set');
             _OnStatus(str);
         end;
+        CmdNewChart:
+        begin
+            if not Assigned(_OnNewChart) then
+                raise Exception.Create('_OnNewChart must be set');
+            _OnNewChart();
+        end;
         
     else
         raise Exception.Create('wrong message: ' + IntToStr(Message.WParam));
@@ -193,6 +202,12 @@ begin
     if Assigned(_OnStatus) then
         raise Exception.Create('_OnStatus already set');
     _OnStatus := AHandler;
+end;
+procedure SetOnNewChart( AHandler : TProcedure);
+begin
+    if Assigned(_OnNewChart) then
+        raise Exception.Create('_OnNewChart already set');
+    _OnNewChart := AHandler;
 end;
 
 

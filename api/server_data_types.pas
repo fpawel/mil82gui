@@ -9,11 +9,11 @@ type
     
     TLastPartyProduct = record
     public
+        ProductID : Int64;
         Serial : Integer;
         Addr : Byte;
         Place : Integer;
         Checked : Boolean;
-        ProductID : Int64;
         
     end;
     
@@ -59,11 +59,11 @@ type
     
     TPartySettings = record
     public
+        ProductType : string;
+        C1 : Double;
         C2 : Double;
         C3 : Double;
         C4 : Double;
-        ProductType : string;
-        C1 : Double;
         
     end;
     
@@ -76,15 +76,15 @@ type
     
     TUserAppSettings = record
     public
+        InterrogateProductVarIntervalMillis : Integer;
+        ComportTemperature : string;
+        TemperaturePlus : Double;
         BlowAirMinutes : Integer;
+        BlowGasMinutes : Integer;
         HoldTemperatureMinutes : Integer;
         ComportProducts : string;
         ComportGas : string;
-        TemperaturePlus : Double;
-        InterrogateProductVarIntervalMillis : Integer;
-        ComportTemperature : string;
         TemperatureMinus : Double;
-        BlowGasMinutes : Integer;
         
     end;
     
@@ -92,17 +92,6 @@ type
     public
         Code : Word;
         Name : string;
-        
-    end;
-    
-    TChartsBucket = record
-    public
-        Day : Integer;
-        Hour : Integer;
-        Minute : Integer;
-        BucketID : Int64;
-        Name : string;
-        Last : Boolean;
         
     end;
     
@@ -118,6 +107,16 @@ type
         
     end;
     
+    TChartsBucket = record
+    public
+        IsLast : Boolean;
+        CreatedAt : TTimeDelphi;
+        UpdatedAt : TTimeDelphi;
+        BucketID : Int64;
+        Name : string;
+        
+    end;
+    
     TYearMonth = record
     public
         Year : Integer;
@@ -127,12 +126,12 @@ type
     
     TPartyCatalogue = record
     public
-        Hour : Integer;
-        Minute : Integer;
         PartyID : Int64;
         ProductType : string;
         Last : Boolean;
         Day : Integer;
+        Hour : Integer;
+        Minute : Integer;
         
     end;
     

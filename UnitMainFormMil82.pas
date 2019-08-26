@@ -117,7 +117,7 @@ var
 begin
     NotifyServices_SetEnabled(false);
     HttpRpcClient.TIMEOUT_CONNECT := 10;
-    //notify_services.CloseServerWindow;
+    // notify_services.CloseServerWindow;
 
     fs := TFileStream.Create(ChangeFileExt(paramstr(0), '.position'),
       fmOpenWrite or fmCreate);
@@ -180,7 +180,7 @@ begin
         Parent := FormData.TabSheetParty;
         BorderStyle := bsNone;
         Align := alClient;
-        //FetchParty(0);
+        // FetchParty(0);
         Show;
     end;
 
@@ -243,6 +243,8 @@ begin
         begin
             LabelStatusTop.Caption := TimeToStr(now) + ' ' + s;
         end);
+
+    SetOnNewChart(FormCharts.FetchYearsMonths);
 
     NotifyServices_SetEnabled(true);
 end;
@@ -346,13 +348,11 @@ end;
 procedure TMainFormMil82.N1Click(Sender: TObject);
 begin
     TRunnerSvc.RunReadVars;
-    FormCharts.FetchYearsMonths;
 end;
 
 procedure TMainFormMil82.N821Click(Sender: TObject);
 begin
     TRunnerSvc.RunMainWork;
-    FormCharts.FetchYearsMonths;
 end;
 
 procedure TMainFormMil82.AppException(Sender: TObject; E: Exception);
@@ -442,16 +442,16 @@ begin
     else
         RichEditlMessageBoxText.ScrollBars := ssNone;
 
-    LabelStatusTop.Caption := TimeToStr(now) + ': ' + X.Work;
+    LabelStatusTop.Caption := TimeToStr(now) + ': ' + x.Work;
 
-    case X.Result of
+    case x.Result of
         0:
             begin
                 ImageInfo.Show;
                 ImageError.Hide;
                 LabelStatusTop.Font.Color := clNavy;
                 RichEditlMessageBoxText.Font.Color := clNavy;
-                PanelMessageBoxTitle.Caption := X.Work + ': успешно';
+                PanelMessageBoxTitle.Caption := x.Work + ': успешно';
                 LabelStatusTop.Caption := LabelStatusTop.Caption + ': успешно';
             end;
         1:
@@ -460,7 +460,7 @@ begin
                 ImageError.Hide;
                 LabelStatusTop.Font.Color := clMaroon;
                 RichEditlMessageBoxText.Font.Color := clMaroon;
-                PanelMessageBoxTitle.Caption := X.Work + ': прервано';
+                PanelMessageBoxTitle.Caption := x.Work + ': прервано';
                 LabelStatusTop.Caption := LabelStatusTop.Caption + ': прервано';
             end;
         2:
@@ -469,15 +469,15 @@ begin
                 ImageError.Show;
                 LabelStatusTop.Font.Color := clRed;
                 RichEditlMessageBoxText.Font.Color := clRed;
-                PanelMessageBoxTitle.Caption := X.Work + ': не выполнено';
+                PanelMessageBoxTitle.Caption := x.Work + ': не выполнено';
                 LabelStatusTop.Caption := LabelStatusTop.Caption +
                   ': не выполнено';
             end;
     else
-        raise Exception.Create('unknown work result: ' + inttostr(X.Result));
+        raise Exception.Create('unknown work result: ' + inttostr(x.Result));
     end;
 
-    RichEditlMessageBoxText.Text := stringreplace(X.Message, ': ',
+    RichEditlMessageBoxText.Text := stringreplace(x.Message, ': ',
       #13#10#9' - ', [rfReplaceAll, rfIgnoreCase]);
 
     LabelStatusBottom1.Caption := '';
