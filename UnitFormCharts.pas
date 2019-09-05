@@ -133,7 +133,7 @@ begin
     if ARow - 1 >= Length(FBuckets) then
         exit;
     FormChartSeries.Hide;
-    Mil82HttpGetResponseAsync(Format(Mil82HttpAddr + '/chart?bucket=%d',
+    Mil82HttpGetResponseAsync(Format(services.GetHttpServerAddr + '/chart?bucket=%d',
       [FBuckets[ARow - 1].BucketID]), OnResponse);
 end;
 

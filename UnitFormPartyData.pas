@@ -5,7 +5,8 @@ interface
 uses
     Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
     System.Classes, Vcl.Graphics,
-    Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Grids, Vcl.StdCtrls, server_data_types;
+    Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Grids, Vcl.StdCtrls,
+    server_data_types;
 
 type
     TMeregedRow = record
@@ -19,10 +20,10 @@ type
         StringGrid2: TStringGrid;
         procedure StringGrid2DrawCell(Sender: TObject; ACol, ARow: integer;
           Rect: TRect; State: TGridDrawState);
-    procedure StringGrid2DblClick(Sender: TObject);
-    procedure StringGrid2TopLeftChanged(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    procedure FormShow(Sender: TObject);
+        procedure StringGrid2DblClick(Sender: TObject);
+        procedure StringGrid2TopLeftChanged(Sender: TObject);
+        procedure FormCreate(Sender: TObject);
+        procedure FormShow(Sender: TObject);
     private
         { Private declarations }
         FMeregedRows: TArray<TMeregedRow>;
@@ -189,13 +190,13 @@ begin
     begin
         xs := TLastPartySvc.ProductsValues
           (app.AppVars[ListBox1.ItemIndex].Code);
-        //FProducts := TLastPartySvc.Products1;
+        // FProducts := TLastPartySvc.Products1;
     end
     else
     begin
         xs := TPartiesSvc.PartyProductsValues(partyID,
           app.AppVars[ListBox1.ItemIndex].Code);
-        //FProducts := TPartiesSvc.PartyProducts(partyID);
+        // FProducts := TPartiesSvc.PartyProducts(partyID);
         FRows := xs.Rows;
     end;
 

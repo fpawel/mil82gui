@@ -60,9 +60,26 @@ type
 
     
 
+function GetHttpServerAddr: string;
+
 implementation 
 
-uses HttpRpcClient, SuperObjectHelp, Grijjy.Bson.Serialization;
+uses System.SysUtils, registry, winapi.windows, HttpRpcClient, SuperObjectHelp, Grijjy.Bson.Serialization;
+
+function GetHttpServerAddr: string;
+var
+    key: TRegistry;
+begin
+    key := TRegistry.Create(KEY_READ);
+    try
+        if not key.OpenKey( 'mil82\http', False) then
+            raise Exception.Create('cant open mil82\http');
+        result := key.ReadString('addr');
+    finally
+        key.CloseKey;
+        key.Free;
+    end;
+end;
 
  
 class function TLastPartySvc.AddNewProduct:TArray<TLastPartyProduct>;
@@ -70,10 +87,8 @@ var
     req : ISuperobject;
 begin
     req := SO;
-
     
-
-    ThttpRpcClient.Call('LastPartySvc.AddNewProduct', req, Result); 
+    ThttpRpcClient.Call(GetHttpServerAddr + '/rpc', 'LastPartySvc.AddNewProduct', req, Result); 
 end;
 
 
@@ -82,11 +97,8 @@ var
     req : ISuperobject;
 begin
     req := SA([]);
-
     req.AsArray.Add(param1); 
-    
-
-    ThttpRpcClient.Call('LastPartySvc.DeleteProduct', req, Result); 
+    ThttpRpcClient.Call(GetHttpServerAddr + '/rpc', 'LastPartySvc.DeleteProduct', req, Result); 
 end;
 
 
@@ -95,10 +107,8 @@ var
     req : ISuperobject;
 begin
     req := SO;
-
     
-
-    ThttpRpcClient.Call('LastPartySvc.Party', req, Result); 
+    ThttpRpcClient.Call(GetHttpServerAddr + '/rpc', 'LastPartySvc.Party', req, Result); 
 end;
 
 
@@ -107,10 +117,8 @@ var
     req : ISuperobject;
 begin
     req := SO;
-
     
-
-    ThttpRpcClient.Call('LastPartySvc.Products', req, Result); 
+    ThttpRpcClient.Call(GetHttpServerAddr + '/rpc', 'LastPartySvc.Products', req, Result); 
 end;
 
 
@@ -119,10 +127,8 @@ var
     req : ISuperobject;
 begin
     req := SO;
-
     
-
-    ThttpRpcClient.Call('LastPartySvc.Products1', req, Result); 
+    ThttpRpcClient.Call(GetHttpServerAddr + '/rpc', 'LastPartySvc.Products1', req, Result); 
 end;
 
 
@@ -131,11 +137,8 @@ var
     req : ISuperobject;
 begin
     req := SA([]);
-
     req.AsArray.Add(param1); 
-    
-
-    ThttpRpcClient.Call('LastPartySvc.ProductsValues', req, Result); 
+    ThttpRpcClient.Call(GetHttpServerAddr + '/rpc', 'LastPartySvc.ProductsValues', req, Result); 
 end;
 
 
@@ -144,11 +147,8 @@ var
     req : ISuperobject;s:string;
 begin
     req := SO;
-
     TgoBsonSerializer.serialize(A, s); req['A'] := SO(s); 
-    
-
-    ThttpRpcClient.GetResponse('LastPartySvc.SetPartySettings', req); 
+    ThttpRpcClient.GetResponse(GetHttpServerAddr + '/rpc', 'LastPartySvc.SetPartySettings', req); 
 end;
 
 
@@ -157,12 +157,8 @@ var
     req : ISuperobject;s:string;
 begin
     req := SO;
-
-    SuperObject_SetField(req, 'ProductID', ProductID); 
-    SuperObject_SetField(req, 'AddrStr', AddrStr); 
-    
-
-    ThttpRpcClient.GetResponse('LastPartySvc.SetProductAddr', req); 
+    SuperObject_SetField(req, 'ProductID', ProductID); SuperObject_SetField(req, 'AddrStr', AddrStr); 
+    ThttpRpcClient.GetResponse(GetHttpServerAddr + '/rpc', 'LastPartySvc.SetProductAddr', req); 
 end;
 
 
@@ -171,12 +167,8 @@ var
     req : ISuperobject;s:string;
 begin
     req := SO;
-
-    SuperObject_SetField(req, 'ProductID', ProductID); 
-    SuperObject_SetField(req, 'SerialStr', SerialStr); 
-    
-
-    ThttpRpcClient.GetResponse('LastPartySvc.SetProductSerial', req); 
+    SuperObject_SetField(req, 'ProductID', ProductID); SuperObject_SetField(req, 'SerialStr', SerialStr); 
+    ThttpRpcClient.GetResponse(GetHttpServerAddr + '/rpc', 'LastPartySvc.SetProductSerial', req); 
 end;
 
  
@@ -185,11 +177,8 @@ var
     req : ISuperobject;
 begin
     req := SA([]);
-
     req.AsArray.Add(param1); 
-    
-
-    ThttpRpcClient.Call('ConfigSvc.ProductTypeTemperatures', req, Result); 
+    ThttpRpcClient.Call(GetHttpServerAddr + '/rpc', 'ConfigSvc.ProductTypeTemperatures', req, Result); 
 end;
 
 
@@ -198,10 +187,8 @@ var
     req : ISuperobject;
 begin
     req := SO;
-
     
-
-    ThttpRpcClient.Call('ConfigSvc.ProductTypesNames', req, Result); 
+    ThttpRpcClient.Call(GetHttpServerAddr + '/rpc', 'ConfigSvc.ProductTypesNames', req, Result); 
 end;
 
 
@@ -210,12 +197,8 @@ var
     req : ISuperobject;s:string;
 begin
     req := SO;
-
-    SuperObject_SetField(req, 'Place', Place); 
-    SuperObject_SetField(req, 'Checked', Checked); 
-    
-
-    ThttpRpcClient.GetResponse('ConfigSvc.SetPlaceChecked', req); 
+    SuperObject_SetField(req, 'Place', Place); SuperObject_SetField(req, 'Checked', Checked); 
+    ThttpRpcClient.GetResponse(GetHttpServerAddr + '/rpc', 'ConfigSvc.SetPlaceChecked', req); 
 end;
 
 
@@ -224,11 +207,8 @@ var
     req : ISuperobject;s:string;
 begin
     req := SO;
-
     TgoBsonSerializer.serialize(A, s); req['A'] := SO(s); 
-    
-
-    ThttpRpcClient.GetResponse('ConfigSvc.SetUserAppSetts', req); 
+    ThttpRpcClient.GetResponse(GetHttpServerAddr + '/rpc', 'ConfigSvc.SetUserAppSetts', req); 
 end;
 
 
@@ -237,10 +217,8 @@ var
     req : ISuperobject;
 begin
     req := SO;
-
     
-
-    ThttpRpcClient.Call('ConfigSvc.UserAppSetts', req, Result); 
+    ThttpRpcClient.Call(GetHttpServerAddr + '/rpc', 'ConfigSvc.UserAppSetts', req, Result); 
 end;
 
 
@@ -249,10 +227,8 @@ var
     req : ISuperobject;
 begin
     req := SO;
-
     
-
-    ThttpRpcClient.Call('ConfigSvc.Vars', req, Result); 
+    ThttpRpcClient.Call(GetHttpServerAddr + '/rpc', 'ConfigSvc.Vars', req, Result); 
 end;
 
  
@@ -261,10 +237,8 @@ var
     req : ISuperobject;
 begin
     req := SO;
-
     
-
-    ThttpRpcClient.GetResponse('RunnerSvc.Cancel', req); 
+    ThttpRpcClient.GetResponse(GetHttpServerAddr + '/rpc', 'RunnerSvc.Cancel', req); 
 end;
 
 
@@ -273,10 +247,8 @@ var
     req : ISuperobject;
 begin
     req := SO;
-
     
-
-    ThttpRpcClient.GetResponse('RunnerSvc.RunMainWork', req); 
+    ThttpRpcClient.GetResponse(GetHttpServerAddr + '/rpc', 'RunnerSvc.RunMainWork', req); 
 end;
 
 
@@ -285,10 +257,8 @@ var
     req : ISuperobject;
 begin
     req := SO;
-
     
-
-    ThttpRpcClient.GetResponse('RunnerSvc.RunReadVars', req); 
+    ThttpRpcClient.GetResponse(GetHttpServerAddr + '/rpc', 'RunnerSvc.RunReadVars', req); 
 end;
 
 
@@ -297,10 +267,8 @@ var
     req : ISuperobject;
 begin
     req := SO;
-
     
-
-    ThttpRpcClient.GetResponse('RunnerSvc.SkipDelay', req); 
+    ThttpRpcClient.GetResponse(GetHttpServerAddr + '/rpc', 'RunnerSvc.SkipDelay', req); 
 end;
 
  
@@ -309,12 +277,8 @@ var
     req : ISuperobject;s:string;
 begin
     req := SO;
-
-    SuperObject_SetField(req, 'Year', Year); 
-    SuperObject_SetField(req, 'Month', Month); 
-    
-
-    ThttpRpcClient.Call('ChartsSvc.BucketsOfYearMonth', req, Result); 
+    SuperObject_SetField(req, 'Year', Year); SuperObject_SetField(req, 'Month', Month); 
+    ThttpRpcClient.Call(GetHttpServerAddr + '/rpc', 'ChartsSvc.BucketsOfYearMonth', req, Result); 
 end;
 
 
@@ -323,17 +287,8 @@ var
     req : ISuperobject;s:string;
 begin
     req := SO;
-
-    SuperObject_SetField(req, 'BucketID', BucketID); 
-    SuperObject_SetField(req, 'Addresses', Addresses); 
-    SuperObject_SetField(req, 'Vars', Vars); 
-    SuperObject_SetField(req, 'ValueMinimum', ValueMinimum); 
-    SuperObject_SetField(req, 'ValueMaximum', ValueMaximum); 
-    TgoBsonSerializer.serialize(TimeMinimum, s); req['TimeMinimum'] := SO(s); 
-    TgoBsonSerializer.serialize(TimeMaximum, s); req['TimeMaximum'] := SO(s); 
-    
-
-    SuperObject_Get(ThttpRpcClient.GetResponse('ChartsSvc.DeletePoints', req), Result); 
+    SuperObject_SetField(req, 'BucketID', BucketID); SuperObject_SetField(req, 'Addresses', Addresses); SuperObject_SetField(req, 'Vars', Vars); SuperObject_SetField(req, 'ValueMinimum', ValueMinimum); SuperObject_SetField(req, 'ValueMaximum', ValueMaximum); TgoBsonSerializer.serialize(TimeMinimum, s); req['TimeMinimum'] := SO(s); TgoBsonSerializer.serialize(TimeMaximum, s); req['TimeMaximum'] := SO(s); 
+    SuperObject_Get(ThttpRpcClient.GetResponse(GetHttpServerAddr + '/rpc', 'ChartsSvc.DeletePoints', req), Result); 
 end;
 
 
@@ -342,10 +297,8 @@ var
     req : ISuperobject;
 begin
     req := SO;
-
     
-
-    ThttpRpcClient.Call('ChartsSvc.YearsMonths', req, Result); 
+    ThttpRpcClient.Call(GetHttpServerAddr + '/rpc', 'ChartsSvc.YearsMonths', req, Result); 
 end;
 
  
@@ -354,10 +307,8 @@ var
     req : ISuperobject;
 begin
     req := SO;
-
     
-
-    ThttpRpcClient.GetResponse('PartiesSvc.NewParty', req); 
+    ThttpRpcClient.GetResponse(GetHttpServerAddr + '/rpc', 'PartiesSvc.NewParty', req); 
 end;
 
 
@@ -366,12 +317,8 @@ var
     req : ISuperobject;s:string;
 begin
     req := SO;
-
-    SuperObject_SetField(req, 'Year', Year); 
-    SuperObject_SetField(req, 'Month', Month); 
-    
-
-    ThttpRpcClient.Call('PartiesSvc.PartiesOfYearMonth', req, Result); 
+    SuperObject_SetField(req, 'Year', Year); SuperObject_SetField(req, 'Month', Month); 
+    ThttpRpcClient.Call(GetHttpServerAddr + '/rpc', 'PartiesSvc.PartiesOfYearMonth', req, Result); 
 end;
 
 
@@ -380,11 +327,8 @@ var
     req : ISuperobject;
 begin
     req := SA([]);
-
     req.AsArray.Add(param1); 
-    
-
-    ThttpRpcClient.Call('PartiesSvc.PartyProducts', req, Result); 
+    ThttpRpcClient.Call(GetHttpServerAddr + '/rpc', 'PartiesSvc.PartyProducts', req, Result); 
 end;
 
 
@@ -393,12 +337,8 @@ var
     req : ISuperobject;
 begin
     req := SA([]);
-
-    req.AsArray.Add(param1); 
-    req.AsArray.Add(param2); 
-    
-
-    ThttpRpcClient.Call('PartiesSvc.PartyProductsValues', req, Result); 
+    req.AsArray.Add(param1); req.AsArray.Add(param2); 
+    ThttpRpcClient.Call(GetHttpServerAddr + '/rpc', 'PartiesSvc.PartyProductsValues', req, Result); 
 end;
 
 
@@ -407,10 +347,8 @@ var
     req : ISuperobject;
 begin
     req := SO;
-
     
-
-    ThttpRpcClient.Call('PartiesSvc.YearsMonths', req, Result); 
+    ThttpRpcClient.Call(GetHttpServerAddr + '/rpc', 'PartiesSvc.YearsMonths', req, Result); 
 end;
 
  

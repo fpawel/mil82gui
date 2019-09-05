@@ -101,8 +101,6 @@ end;
 procedure TMainFormMil82.FormCreate(Sender: TObject);
 begin
 
-    HttpRpcClient.HttpHostAddr := app.Mil82HttpAddr;
-
     Application.OnException := AppException;
     LabelStatusTop.Caption := '';
     PanelMessageBox.Width := 700;

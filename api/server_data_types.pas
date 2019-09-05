@@ -9,11 +9,11 @@ type
     
     TLastPartyProduct = record
     public
-        ProductID : Int64;
-        Serial : Integer;
         Addr : Byte;
         Place : Integer;
         Checked : Boolean;
+        ProductID : Int64;
+        Serial : Integer;
         
     end;
     
@@ -31,9 +31,9 @@ type
     
     TProduct = record
     public
+        Addr : Byte;
         ProductID : Int64;
         Serial : Integer;
-        Addr : Byte;
         
     end;
     
@@ -59,11 +59,11 @@ type
     
     TPartySettings = record
     public
-        ProductType : string;
         C1 : Double;
         C2 : Double;
         C3 : Double;
         C4 : Double;
+        ProductType : string;
         
     end;
     
@@ -76,15 +76,15 @@ type
     
     TUserAppSettings = record
     public
-        InterrogateProductVarIntervalMillis : Integer;
-        ComportTemperature : string;
-        TemperaturePlus : Double;
-        BlowAirMinutes : Integer;
         BlowGasMinutes : Integer;
         HoldTemperatureMinutes : Integer;
+        ComportTemperature : string;
+        TemperatureMinus : Double;
+        TemperaturePlus : Double;
+        BlowAirMinutes : Integer;
+        InterrogateProductVarIntervalMillis : Integer;
         ComportProducts : string;
         ComportGas : string;
-        TemperatureMinus : Double;
         
     end;
     
@@ -97,13 +97,13 @@ type
     
     TTimeDelphi = record
     public
-        Minute : Integer;
-        Second : Integer;
-        Millisecond : Integer;
         Year : Integer;
         Month : Integer;
         Day : Integer;
         Hour : Integer;
+        Minute : Integer;
+        Second : Integer;
+        Millisecond : Integer;
         
     end;
     
@@ -126,12 +126,12 @@ type
     
     TPartyCatalogue = record
     public
-        PartyID : Int64;
-        ProductType : string;
         Last : Boolean;
         Day : Integer;
         Hour : Integer;
         Minute : Integer;
+        PartyID : Int64;
+        ProductType : string;
         
     end;
     

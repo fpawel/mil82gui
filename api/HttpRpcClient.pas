@@ -7,15 +7,13 @@ uses superobject, System.sysutils;
 type
 
     ThttpRpcClient = record
-        class procedure Call<T>(method: string; params: ISuperobject;
+        class procedure Call<T>(url, method: string; params: ISuperobject;
           var AResult: T); static;
-        class function GetResponse(method: string; params: ISuperobject)
+        class function GetResponse(url, method: string; params: ISuperobject)
           : ISuperobject; static;
     end;
 
 var
-    { Адрес хоста }
-    HttpHostAddr : string;
 
     { Timeout for operations }
     TIMEOUT_CONNECT : integer = 500;
@@ -29,12 +27,12 @@ uses HttpExceptions, registry, winapi.windows,
 
 
 
-class procedure ThttpRpcClient.Call<T>(method: string; params: ISuperobject;
+class procedure ThttpRpcClient.Call<T>(url, method: string; params: ISuperobject;
   var AResult: T);
 var
     json: string;
 begin
-    json := ThttpRpcClient.GetResponse(method, params).AsJSon;
+    json := ThttpRpcClient.GetResponse(url, method, params).AsJSon;
     TgoBsonSerializer.Deserialize(json, AResult);
 
 end;
@@ -55,7 +53,7 @@ begin
     end;
 end;
 
-class function ThttpRpcClient.GetResponse(method: string; params: ISuperobject)
+class function ThttpRpcClient.GetResponse(url, method: string; params: ISuperobject)
   : ISuperobject;
 var
     Http: TgoHttpClient;
@@ -70,7 +68,7 @@ begin
         Http.RequestHeaders.AddOrSet('Accept', 'application/json');
         Http.RequestBody := TJsonRpcMessage.request(0, method, params).AsJSon;
 
-        if not Http.Post(HttpHostAddr + '/rpc', AResponse, TIMEOUT_CONNECT,
+        if not Http.Post(url, AResponse, TIMEOUT_CONNECT,
           TIMEOUT_RECV) then
             raise ERpcNoResponseException.Create('нет связи с хост процессом');
 

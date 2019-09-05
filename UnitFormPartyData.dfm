@@ -71,8 +71,6 @@ object FormPartyData: TFormPartyData
     OnDblClick = StringGrid2DblClick
     OnDrawCell = StringGrid2DrawCell
     OnTopLeftChanged = StringGrid2TopLeftChanged
-    ExplicitLeft = 8
-    ExplicitTop = 34
     ColWidths = (
       64
       64
